@@ -1,4 +1,4 @@
-# vm_NAP
+# vm-NAP
 
 ### Virtual metabolism Network Annotation Propagation
 
