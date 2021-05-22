@@ -9,4 +9,4 @@ View the notebook
 [`2105_vm-NAP-GNPS.ipynb`](https://nbviewer.jupyter.org/github/lfnothias/vm-NAP/blob/main/2105_vm-NAP-GNPS.ipynb)
 
 
-Interative notebook here -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/master?urlpath=lab/tree/notebooks/2105_vm-NAP-GNPS.ipynb)
+Interative notebook here -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/master?urlpath=lab/tree/2105_vm-NAP-GNPS.ipynb)
