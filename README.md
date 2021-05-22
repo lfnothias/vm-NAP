@@ -14,8 +14,15 @@ Note that for large computation (many compounds, many metabolization steps), thi
 
 ### Local installation
 
-Install locally in Anaconda with:
-`conda install vm-NAP`
+Install locally in conda with:
+
+>Download the present repository.
+
+>In the terminal, navigate to the repository folder.
+
+> Install the environment with:
+`conda env vm-NAP --file environment.yml`
+
 
 It might requires other depencies related ipython and jupter notebooks.
 

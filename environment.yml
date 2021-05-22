@@ -1,4 +1,4 @@
-name: example-environment
+name: vm-NAP
 channels:
   - conda-forge
   - 3d-e-Chem
