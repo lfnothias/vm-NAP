@@ -6,67 +6,14 @@ from rdkit import Chem
 import os
 import sys
 
-# Run SyGMa on two lists of SMILES and compound name
-def run_sygma(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name):
+# Run SyGMa on two lists of SMILES and compound name in batch
+def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name, batch_size):
     
-    scenario = sygma.Scenario([
-    [sygma.ruleset['phase1'], int(phase_1_cycle)],
-    [sygma.ruleset['phase2'], int(phase_2_cycle)]])
-    
-    df = pd.DataFrame(data=None)
-    df2 = pd.DataFrame(data=None)
-
-    for a, b in zip(list_smiles, list_compound_name):
-        try:
-            pathway = []
-            mol = Chem.MolFromSmiles(a)
-            metabolic_tree = scenario.run(mol)
-
-            #Get the score
-            metabolic_tree.calc_scores()
-
-            #Get the pathway
-            metabolites = metabolic_tree.to_smiles()
-
-            # Get the metabolic pathway
-            metabolite_info = metabolic_tree.to_list()
-            for k in metabolite_info[1:]:
-                #print(k['SyGMa_pathway'])
-                pathway.append(k['SyGMa_pathway'])
-
-            #Summarize results
-            df = pd.DataFrame(metabolites[1:],columns=metabolites[0])
-            df['parent'] = (metabolites[0][0])
-            df.columns.values[0] = 'metabolite'
-            df.columns.values[1] = 'score'
-    
-            df['score'] = df['score'].round(3)
-            df['pathway'] = pathway
-            df['pathway'] = df['pathway'].str[:75]
-            df['Compound_Name'] = b[:50]
-            df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
-            df = pd.DataFrame(data=None)
-
-        except:
-            raise
-
-    # Create new column name
-    df2['score'] = df2['score'].astype(str)
-    df2['Compound_Name_SyGMa'] = df2['pathway'] + df2['score']+ '; '+ df2['Compound_Name'] 
-    df2["Compound_Name_SyGMa"] = df2["Compound_Name_SyGMa"].str.replace("\n", "")
-
-    print('Number of SyGMA candidates = '+str(df2.shape[0]))
-    print('Number of unique SyGMA candidates = '+str(len(df2.metabolite.unique())))
-    
-    df2.to_csv(output_name, sep='\t', index = False)
-
-    df2 = pd.DataFrame(data=None)
-
-
-# Running SyGMa for many compounds by writting locally a file in each loop phase (SLOW)
-
-def run_sygma_many_compounds(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name):
-    
+    print('=== Starting SyGMa computation ===')
+    print('Batch_size = '+str(batch_size))
+    print('If you are running many compounds or cycles, and maxing out RAM memory available, you can decreased the batch size. Otherwise the value can be increased for faster computation.')
+    print('======')
+          
     scenario = sygma.Scenario([
     [sygma.ruleset['phase1'], int(phase_1_cycle)],
     [sygma.ruleset['phase2'], int(phase_2_cycle)]])
@@ -74,41 +21,46 @@ def run_sygma_many_compounds(list_smiles, list_compound_name, phase_1_cycle, pha
     df = pd.DataFrame(data=None)
     df.to_csv('sygma_temp_output.csv', sep='\t')
 
-    for a, b in zip(list_smiles, list_compound_name):
-        try:
-            pathway = []
-            mol = Chem.MolFromSmiles(a)
-            metabolic_tree = scenario.run(mol)
+    for i in range(0, len(list_smiles), batch_size):
+        list_smiles_batch =  list_smiles[i:i + batch_size]
+        list_compound_name_batch = list_compound_name[i:i + batch_size]
 
-            #Get the score
-            metabolic_tree.calc_scores()
 
-            #Get the pathway
-            metabolites = metabolic_tree.to_smiles()
+        for a, b in zip(list_smiles_batch, list_compound_name_batch):
+            try:
+                pathway = []
+                mol = Chem.MolFromSmiles(a)
+                metabolic_tree = scenario.run(mol)
 
-            # Get the metabolic pathway
-            metabolite_info = metabolic_tree.to_list()
-            for k in metabolite_info[1:]:
-                #print(k['SyGMa_pathway'])
-                pathway.append(k['SyGMa_pathway'])
+                #Get the score
+                metabolic_tree.calc_scores()
 
-            #Summarize results
-            df = pd.DataFrame(metabolites[1:],columns=metabolites[0])
-            df['parent'] = (metabolites[0][0])
-            df.columns.values[0] = 'metabolite'
-            df.columns.values[1] = 'score'
-            df['score'] = df['score'].round(3)
-            df['pathway'] = pathway
-            df['pathway'] = df['pathway'].str[:75]
-            df['Compound_Name'] = b[:50]
-            df2 = pd.read_csv('sygma_temp_output.csv', sep='\t')
-            df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
-            df2.to_csv('sygma_temp_output.csv', sep='\t', index=False)
+                #Get the pathway
+                metabolites = metabolic_tree.to_smiles()
 
-            df = pd.DataFrame(data=None)
-            df2 = pd.DataFrame(data=None)
-        except:
-            raise
+                # Get the metabolic pathway
+                metabolite_info = metabolic_tree.to_list()
+                for k in metabolite_info[1:]:
+                    #print(k['SyGMa_pathway'])
+                    pathway.append(k['SyGMa_pathway'])
+
+                #Summarize results
+                df = pd.DataFrame(metabolites[1:],columns=metabolites[0])
+                df['parent'] = (metabolites[0][0])
+                df.columns.values[0] = 'metabolite'
+                df.columns.values[1] = 'score'
+                df['score'] = df['score'].round(3)
+                df['pathway'] = pathway
+                df['pathway'] = df['pathway'].str[:75]
+                df['Compound_Name'] = b[:50]
+                df2 = pd.read_csv('sygma_temp_output.csv', sep='\t')
+                df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
+                df2.to_csv('sygma_temp_output.csv', sep='\t', index=False)
+
+                df = pd.DataFrame(data=None)
+                df2 = pd.DataFrame(data=None)
+            except:
+                raise
 
     # Create new column name
     df2 = pd.read_csv('sygma_temp_output.csv', sep='\t')
@@ -123,8 +75,6 @@ def run_sygma_many_compounds(list_smiles, list_compound_name, phase_1_cycle, pha
     df2.to_csv(output_name, sep='\t', index = False)
 
     df2 = pd.DataFrame(data=None)
-
-
 
 
 # Run BioTransformer on two lists of SMILES and compound name
