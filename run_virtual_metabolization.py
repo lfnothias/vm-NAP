@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import sygma
 from rdkit import Chem
+from rdkit import RDLogger
+lg = RDLogger.logger()
+lg.setLevel(RDLogger.ERROR)
 import os
 import sys
 
@@ -10,8 +13,11 @@ import sys
 def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name, batch_size):
     
     print('=== Starting SyGMa computation ===')
+    print('Number of compounds = '+str(len(list_smiles)))
     print('Batch_size = '+str(batch_size))
     print('If you are running many compounds or cycles, and maxing out RAM memory available, you can decreased the batch size. Otherwise the value can be increased for faster computation.')
+    print('======')
+    print('Please wait')
     print('======')
           
     scenario = sygma.Scenario([
@@ -19,12 +25,14 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
     [sygma.ruleset['phase2'], int(phase_2_cycle)]])
     
     df = pd.DataFrame(data=None)
+    df2 = pd.DataFrame(data=None)
     df.to_csv('sygma_temp_output.csv', sep='\t')
+
+    batch_counter = 0
 
     for i in range(0, len(list_smiles), batch_size):
         list_smiles_batch =  list_smiles[i:i + batch_size]
         list_compound_name_batch = list_compound_name[i:i + batch_size]
-
 
         for a, b in zip(list_smiles_batch, list_compound_name_batch):
             try:
@@ -53,27 +61,29 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
                 df['pathway'] = pathway
                 df['pathway'] = df['pathway'].str[:75]
                 df['Compound_Name'] = b[:50]
-                df2 = pd.read_csv('sygma_temp_output.csv', sep='\t')
                 df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
-                df2.to_csv('sygma_temp_output.csv', sep='\t', index=False)
 
-                df = pd.DataFrame(data=None)
-                df2 = pd.DataFrame(data=None)
             except:
                 raise
-
+                
+        df2.to_csv('sygma_temp_output.csv', sep='\t', index=False)
+        df = pd.read_csv('sygma_temp_output.csv', sep='\t')
+        
+        batch_counter += 1
+        print('Batch '+str(batch_counter)+' was compeleted')
+    
     # Create new column name
+    df = pd.DataFrame(data=None)
     df2 = pd.read_csv('sygma_temp_output.csv', sep='\t')
     df2['score'] = df2['score'].astype(str)
     df2['Compound_Name_SyGMa'] = df2['pathway'] + df2['score']+ '; '+ df2['Compound_Name'] 
     df2["Compound_Name_SyGMa"] = df2["Compound_Name_SyGMa"].str.replace("\n", "")
-    df2 = df2.iloc[: , 1:]
 
     print('Number of SyGMA candidates = '+str(df2.shape[0]))
     print('Number of unique SyGMA candidates = '+str(len(df2.metabolite.unique())))
-
+    print('===== COMPLETED =====')
     df2.to_csv(output_name, sep='\t', index = False)
-
+    
     df2 = pd.DataFrame(data=None)
 
 
@@ -111,6 +121,7 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
     #Create a consensus name
     df2_bio['Compound_Name_BioTransformer'] = df2_bio['Reaction'] + '; '+ df2_bio['Parent_Compound_Name'] + '; '+ df2_bio['Reaction ID'] + '; '+ df2_bio['Biosystem']
     
+    print('===== COMPLETED =====')
     print('Total number of BioTransformer candidates = '+str(df2_bio.shape[0]))
     df2_bio.to_csv(output_name, sep='\t', index = False)
     
