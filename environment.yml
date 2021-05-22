@@ -1,0 +1,9 @@
+name: example-environment
+channels:
+  - conda-forge
+  -  3d-e-Chem
+dependencies:
+  - numpy
+  - pandas
+  - rdkit
+  - sygma
