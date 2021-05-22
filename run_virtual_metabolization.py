@@ -7,7 +7,7 @@ import os
 import sys
 
 # Run SyGMa on two lists of SMILES and compound name
-def run_sygma(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates):
+def run_sygma(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name):
     
     scenario = sygma.Scenario([
     [sygma.ruleset['phase1'], int(phase_1_cycle)],
@@ -39,11 +39,13 @@ def run_sygma(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top
             df['parent'] = (metabolites[0][0])
             df.columns.values[0] = 'metabolite'
             df.columns.values[1] = 'score'
-            #print(df)
-            #print(pathway)
+    
+            df['score'] = df['score'].round(3)
             df['pathway'] = pathway
-            df['Compound_Name'] = b
+            df['pathway'] = df['pathway'].str[:75]
+            df['Compound_Name'] = b[:50]
             df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
+            df = pd.DataFrame(data=None)
 
         except:
             raise
@@ -53,13 +55,80 @@ def run_sygma(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top
     df2['Compound_Name_SyGMa'] = df2['pathway'] + df2['score']+ '; '+ df2['Compound_Name'] 
     df2["Compound_Name_SyGMa"] = df2["Compound_Name_SyGMa"].str.replace("\n", "")
 
-    run_sygma.df2 = df2
+    print('Number of SyGMA candidates = '+str(df2.shape[0]))
+    print('Number of unique SyGMA candidates = '+str(len(df2.metabolite.unique())))
     
+    df2.to_csv(output_name, sep='\t', index = False)
+
+    df2 = pd.DataFrame(data=None)
+
+
+# Running SyGMa for many compounds by writting locally a file in each loop phase (SLOW)
+
+def run_sygma_many_compounds(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name):
+    
+    scenario = sygma.Scenario([
+    [sygma.ruleset['phase1'], int(phase_1_cycle)],
+    [sygma.ruleset['phase2'], int(phase_2_cycle)]])
+    
+    df = pd.DataFrame(data=None)
+    df.to_csv('sygma_temp_output.csv', sep='\t')
+
+    for a, b in zip(list_smiles, list_compound_name):
+        try:
+            pathway = []
+            mol = Chem.MolFromSmiles(a)
+            metabolic_tree = scenario.run(mol)
+
+            #Get the score
+            metabolic_tree.calc_scores()
+
+            #Get the pathway
+            metabolites = metabolic_tree.to_smiles()
+
+            # Get the metabolic pathway
+            metabolite_info = metabolic_tree.to_list()
+            for k in metabolite_info[1:]:
+                #print(k['SyGMa_pathway'])
+                pathway.append(k['SyGMa_pathway'])
+
+            #Summarize results
+            df = pd.DataFrame(metabolites[1:],columns=metabolites[0])
+            df['parent'] = (metabolites[0][0])
+            df.columns.values[0] = 'metabolite'
+            df.columns.values[1] = 'score'
+            df['score'] = df['score'].round(3)
+            df['pathway'] = pathway
+            df['pathway'] = df['pathway'].str[:75]
+            df['Compound_Name'] = b[:50]
+            df2 = pd.read_csv('sygma_temp_output.csv', sep='\t')
+            df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
+            df2.to_csv('sygma_temp_output.csv', sep='\t', index=False)
+
+            df = pd.DataFrame(data=None)
+            df2 = pd.DataFrame(data=None)
+        except:
+            raise
+
+    # Create new column name
+    df2 = pd.read_csv('sygma_temp_output.csv', sep='\t')
+    df2['score'] = df2['score'].astype(str)
+    df2['Compound_Name_SyGMa'] = df2['pathway'] + df2['score']+ '; '+ df2['Compound_Name'] 
+    df2["Compound_Name_SyGMa"] = df2["Compound_Name_SyGMa"].str.replace("\n", "")
+    df2 = df2.iloc[: , 1:]
+
     print('Number of SyGMA candidates = '+str(df2.shape[0]))
     print('Number of unique SyGMA candidates = '+str(len(df2.metabolite.unique())))
 
+    df2.to_csv(output_name, sep='\t', index = False)
+
+    df2 = pd.DataFrame(data=None)
+
+
+
+
 # Run BioTransformer on two lists of SMILES and compound name
-def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformation, number_of_steps):
+def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformation, number_of_steps, output_name):
     
     # Prepare pandas tables
     df_bio = pd.DataFrame(data=None)
@@ -69,7 +138,7 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
     print('     Number of compounds being computed =  '+str(len(list_smiles)))
 
     # Iterative into the lists and run BioTransformer
-    for a, b in zip(list_smiles[:5], list_compound_name[:5]):
+    for a, b in zip(list_smiles, list_compound_name):
         
         biotransformcall = 'java -jar biotransformer-1.1.5.jar  -k pred -b '+ type_of_biotransformation +' -ismi ' + a +' -ocsv biotransformer_temp_output.csv -s '+str(number_of_steps)
         biotransformcall = biotransformcall.split() # because call takes a list of strings 
@@ -82,7 +151,7 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
             # Add the parent compound name
             df_bio['Parent_Compound_Name'] = b 
             counter +=1
-            print('Number of BioTransformer candidates for compound '+str(counter)+ ' = '+str(df_bio.shape[0]))
+            print('          BioTransformer candidates for compound n'+str(counter)+ ' = '+str(df_bio.shape[0]))
             # Append to the master table
             df2_bio = df2_bio.append(df_bio, ignore_index=True)
 
@@ -91,31 +160,28 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
 
     #Create a consensus name
     df2_bio['Compound_Name_BioTransformer'] = df2_bio['Reaction'] + '; '+ df2_bio['Parent_Compound_Name'] + '; '+ df2_bio['Reaction ID'] + '; '+ df2_bio['Biosystem']
-    run_biotransformer.df2_bio = df2_bio 
     
     print('Total number of BioTransformer candidates = '+str(df2_bio.shape[0]))
+    df2_bio.to_csv(output_name, sep='\t', index = False)
     
 #Write out the results
-def export_for_SIRIUS(df, string):
-    df_new = df # new table
-    # RENAME SMILES
-    df_new.to_csv('results_virtual_metabo_'+string+'.tsv', sep = '\t', index = False)
+def export_for_SIRIUS(input_df_name):
+    df_new = pd.read_csv(input_df_name, sep='\t')
     
     try:
         #SyGMa
         df_new = df_new[['metabolite', 'Compound_Name_SyGMa']]
-        df_new = df_new.rename(columns={"metabolite": "Smiles", "Compound_Name_SyGMA": "name"})
+        df_new = df_new.rename(columns={"metabolite": "Smiles", "Compound_Name_SyGMa": "name"})
     except:
         #BioTransformer
         df_new = df_new[['SMILES', 'Compound_Name_BioTransformer']]
         df_new = df_new.rename(columns={"SMILES": "Smiles", "Compound_Name_BioTransformer": "name"})
         
-    df_new.to_csv('results_virtual_metabo_formatted_'+string+'_SIRIUS.tsv', sep = '\t', index = False)
+    df_new.to_csv(input_df_name[:-4]+'_SIRIUS.tsv', sep = '\t', index = False)
     
-def export_for_NAP(df,string):
-    df_new = df # new table
-    # RENAME SMILES
-    df_new.to_csv('results_virtual_metabo_'+str(string)+'.tsv', sep = '\t', index = False)
+def export_for_NAP(input_df_name):
+    df_new = pd.read_csv(input_df_name, sep='\t')
+
     try:
         #SyGMa
         df_new = df_new[['metabolite', 'Compound_Name_SyGMa']]
@@ -123,4 +189,4 @@ def export_for_NAP(df,string):
         #BioTransformer
         df_new = df_new[['SMILES', 'Compound_Name_BioTransformer']]
 
-    df_new.to_csv('results_virtual_metabo_formatted_'+string+'_NAP.tsv', sep = '\t', index = False, header= False)
+    df_new.to_csv(input_df_name[:-4]+'_NAP.tsv', sep = '\t', index = False, header= False)

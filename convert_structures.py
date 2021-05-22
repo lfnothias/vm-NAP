@@ -46,7 +46,13 @@ def consolidate_and_convert_structures(df, prefix, smiles, inchi=0):
     df[str(prefix)+'Consol_SMILES_iso'] = mol_to_SMILES_iso.smiles_list
     df[str(prefix)+'Consol_SMILES'] = mol_to_SMILES.smiles_list
     df[str(prefix)+'Consol_InChIKey'] = mol_to_INCHIKEY.inchikey_list
-    df[str(prefix)+'Consol_InChI']= mol_to_INCHI.inchi_list
+    df[str(prefix)+'Consol_InChI'] = mol_to_INCHI.inchi_list
+    
+    mol_to_INCHI.inchi_list = []
+    mol_to_INCHIKEY.inchikey_list = []
+    mol_to_SMILES.smiles_list = []
+    mol_to_SMILES_iso.smiles_list = []
+
     print('End')
 
 
@@ -76,6 +82,7 @@ def make_mol_from_SMILES(list_smiles):
             counter_not_available += 1
             
     make_mol_from_SMILES.mol_list = mol_list
+    mol_list = []
     print('Succesfully converted to mol object: '+str(counter_success))
     print('Exception to the parsing: '+str(counter_except))
     print('Not available: '+str(counter_not_available))
@@ -107,6 +114,7 @@ def make_mol_from_INCHI(list_inchi):
             counter_not_available += 1
             
     make_mol_from_INCHI.mol_list = mol_list
+    mol_list = []
     print('Succesfully converted to mol object: '+str(counter_success))
     print('Exception to the parsing: '+str(counter_except))
     print('Not available: '+str(counter_not_available))
@@ -131,7 +139,7 @@ def merge_mol(mol_list,mol_list2):
             consensus_mol_list.append(np.nan)
             
     merge_mol.consensus_mol_list = consensus_mol_list
-    
+    consensus_mol_list = []
     print('Total mol object from the list 1 = '+str(counter_1))
     print('Mol object consolidated from list 2 = '+str(counter_2))
     print('Consolidated structures = '+str(counter_1+counter_2))
@@ -154,7 +162,7 @@ def mol_to_SMILES_iso(mol_list):
             pass
         
     mol_to_SMILES_iso.smiles_list = smiles_list
-
+    smiles_list = []
 
 def mol_to_SMILES(mol_list):
 	#Take a list of mol objects and convert to SMILES with stereoconfiguration
@@ -172,7 +180,7 @@ def mol_to_SMILES(mol_list):
             pass
         
     mol_to_SMILES.smiles_list = smiles_list
-
+    smiles_list = []
 
 def mol_to_INCHIKEY(mol_list):
 	#Take a list of mol objects and convert to INCHIKEY
@@ -191,6 +199,7 @@ def mol_to_INCHIKEY(mol_list):
             pass
         
     mol_to_INCHIKEY.inchikey_list = inchikey_list
+    inchikey_list = []
     
 
 def mol_to_INCHI(mol_list):
@@ -207,8 +216,9 @@ def mol_to_INCHI(mol_list):
         else:
             inchi_list.append(np.nan)
             pass
-        
+      
     mol_to_INCHI.inchi_list = inchi_list
+    inchi_list = []  
     
 def clean_SMILES_list(smiles_list, smiles_list_output):
     #Strip SMILES with salts
@@ -220,6 +230,7 @@ def clean_SMILES_list(smiles_list, smiles_list_output):
     #Remove duplicates and nan and len(x) < 3
     
     [smiles_list_output.append(x) for x in smiles_list if x not in smiles_list_output and len(x) > 2 and x != 'nan' and pd.isnull(x) == False]
-    
+    smiles_list = []
+
     print(len(smiles_list_output))
     print('====')
