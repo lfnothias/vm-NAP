@@ -164,7 +164,7 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
         except:
             print('          ! Problem with BioTransformer for compound n'+str(counter)+' - will be ignored')
             print('                    '+b)
-            print('                    Likely error: Compound with smile '+a+' is Invalid, check on http://biotransformer.ca and report them the issue if needed.')
+            print('                    Likely error: Compound with smile '+a+' is Invalid, either fix the entry on GNPS or check the SMILES on http://biotransformer.ca and report if needed.')
             pass
 
     #Create a consensus name
