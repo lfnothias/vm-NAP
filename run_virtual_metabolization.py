@@ -162,9 +162,9 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
             df2_bio = df2_bio.append(df_bio, ignore_index=True)
 
         except:
-            print('          ! Problem with BioTransformer for compound n'+str(counter)+' - will be ignored')
+            print('          ! No candidate or error with BioTransformer for compound n'+str(counter)+' - will be ignored')
             print('                    '+b)
-            print('                    Likely error: Compound with smile '+a+' is Invalid, either fix the entry on GNPS or check the SMILES on http://biotransformer.ca and report if needed.')
+            print('                    For:  '+a+' . The entry might need curation in GNPS library or check the SMILES on http://biotransformer.ca and report if needed.')
             pass
 
     #Create a consensus name
