@@ -133,7 +133,7 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
         return None
     elif type_of_biotransformation in list_of_biotransformation:
         print('     Biotransformation: '+type_of_biotransformation)
-        print('     Please wait for the computation ...)
+        print('     Please wait for the computation ...')
 
         
     # Iterative into the lists and run BioTransformer
