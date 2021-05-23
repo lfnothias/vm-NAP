@@ -76,8 +76,9 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
                 df.columns.values[1] = 'score'
                 df['score'] = df['score'].round(3)
                 df['pathway'] = pathway
+                df = df.dropna(subset=['pathway']) 
                 del pathway
-                df['pathway'] = df['pathway'].str[:75]
+                df['pathway'] = df['pathway'].astype(str).str[:75]
                 df['Compound_Name'] = b[:50]
                 del b
                 df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
@@ -89,7 +90,7 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
         # Write I/O
         
         batch_counter += 1
-        print('Batch '+str(batch_counter)+'/'+str(math.ceil(len(list_smiles)/int(batch_size)))+' completed')
+        print('Batch '+str(batch_counter)+'/'+str(math.ceil(len(list_smiles)/int(batch_size)))+' completed with '+str(df2.shape[0])+' metabolites')
         df_master = pd.read_csv('sygma_temp_master.tsv', sep='\t')
         df_master = df_master.append(df2, ignore_index=True)
         del df2
@@ -109,6 +110,7 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
     print('===== COMPLETED =====')
     df_master.to_csv(output_name, sep='\t', index = False)
     del df_master
+    
     
 
 # Run BioTransformer on two lists of SMILES and compound name
@@ -137,21 +139,19 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
 
         
     # Iterative into the lists and run BioTransformer
-    for a, b in zip(list_smiles, list_compound_name):
+    for a, b in zip(list_smiles[:5], list_compound_name[:5]):
         
+        counter +=1
         try:
             os.remove("biotransformer_temp_output.csv")
         except:
             pass
         
-        biotransformcall = 'java -jar biotransformer-1.1.5.jar -k pred -b '+ type_of_biotransformation +' -ismi ' + a +' -ocsv biotransformer_temp_output.csv -s '+str(number_of_steps)
-        biotransformcall = biotransformcall.split() # because call takes a list of strings 
-
-        counter +=1
-
         try:
+            biotransformcall = 'java -jar biotransformer-1.1.5.jar -k pred -b '+ type_of_biotransformation +' -ismi "' + a +'" -ocsv biotransformer_temp_output.csv -s '+str(number_of_steps)
+            biotransformcall = biotransformcall.split() # because call takes a list of strings 
             call(biotransformcall)
-
+            
             # Read the results
             df_bio = pd.read_csv('biotransformer_temp_output.csv', sep=',', usecols=col_list)
 
@@ -162,8 +162,9 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
             df2_bio = df2_bio.append(df_bio, ignore_index=True)
 
         except:
-            print('          !Problem running BioTransformer for compound n'+str(counter)+' - will be ignored')
-            print('          '+a)
+            print('          ! Problem with BioTransformer for compound n'+str(counter)+' - will be ignored')
+            print('                    '+b)
+            print('                    Likely error: Compound with smile '+a+' is Invalid, check on http://biotransformer.ca and report them the issue if needed.')
             pass
 
     #Create a consensus name
