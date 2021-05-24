@@ -11,7 +11,7 @@ View the notebook in [non-interactive view.](https://nbviewer.jupyter.org/github
 
 The interative notebook can be accessed via this badge -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/2105_vm-NAP-GNPS.ipynb)
 
-Note that for large computation (many compounds, many metabolization steps), this usage might be limited (2GB of max RAM).
+Note that for large computation (many compounds, many metabolization steps), the use of notebook in Binder will be limited (2GB of max RAM).
 
 ### Local installation
 
@@ -24,8 +24,7 @@ Install locally in conda with:
 > Install the environment with:
 `conda env vm-NAP --file environment.yml`
 
-
-It might requires other depencies related ipython and jupter notebooks.
+It might require other depencies related ipython and jupter notebooks.
 
 ### Using vm-NAP with Network Annotation Propagation
 
