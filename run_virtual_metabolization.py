@@ -1,8 +1,10 @@
-from subprocess import call
 import pandas as pd
 import numpy as np
 import math
+from subprocess import call
 import sygma
+from rdkit.Chem import SaltRemover, MolStandardize
+from molvs import Standardizer
 from rdkit import Chem
 from rdkit import RDLogger
 lg = RDLogger.logger()
@@ -139,7 +141,7 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
 
         
     # Iterative into the lists and run BioTransformer
-    for a, b in zip(list_smiles[:5], list_compound_name[:5]):
+    for a, b in zip(list_smiles, list_compound_name):
         
         counter +=1
         try:
@@ -162,9 +164,9 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
             df2_bio = df2_bio.append(df_bio, ignore_index=True)
 
         except:
-            print('          ! No candidate or error with BioTransformer for compound n'+str(counter)+' - will be ignored')
+            print('          ! No candidate or error with BioTransformer for compound n'+str(counter)+' - it will be ignored')
             print('                    '+b)
-            print('                    For:  '+a+' . The entry might need curation in GNPS library or check the SMILES on http://biotransformer.ca and report if needed.')
+            print('                    For:  '+a+' . Check the SMILES on http://biotransformer.ca and/or the GNPS library entry.')
             pass
 
     #Create a consensus name

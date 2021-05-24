@@ -9,3 +9,4 @@ dependencies:
   - rdkit
   - sygma
   - java-jdk
+  - molvs

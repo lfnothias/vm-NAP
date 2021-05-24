@@ -1,6 +1,12 @@
 import pandas as pd
 import numpy as np
 from rdkit import Chem
+from rdkit.Chem import SaltRemover
+from molvs import standardize_smiles
+from molvs import Standardizer
+from rdkit import RDLogger
+lg = RDLogger.logger()
+lg.setLevel(RDLogger.ERROR)
 import math
 
 ## Made by Louis Felix Nothias Feb 2021
@@ -25,6 +31,7 @@ def consolidate_and_convert_structures(df, prefix, smiles, inchi=0):
             mol_to_SMILES(make_mol_from_SMILES.mol_list)
             mol_to_INCHI(make_mol_from_SMILES.mol_list)
             mol_to_INCHIKEY(make_mol_from_SMILES.mol_list)
+
         except:
             raise
     else:
@@ -63,12 +70,12 @@ def make_mol_from_SMILES(list_smiles):
     counter_success = 0
     counter_except = 0
     counter_not_available = 0
-    
+
 	# Run for loops for mol object from smiles list
     for x in list_smiles:
         if x is not np.nan and len(x) >5:
             try:
-                mol_list.append(Chem.MolFromSmiles(x))
+                mol_list.append(Chem.MolFromSmiles(remove_salt_from_SMILES(x)))
                 #print('Conversion worked: '+str(x))
                 counter_success += 1
             except:
@@ -130,14 +137,16 @@ def merge_mol(mol_list,mol_list2):
     for a, b in zip(mol_list, mol_list2):
         counter_3 +=1
         if a is not np.nan and a is not None:
-            consensus_mol_list.append(a)
+            consensus_mol_list.append(neutralize_atoms_in_mol(mol_salt_remover(a)))
             counter_1 +=1
         elif b is not np.nan and b is not None:
-            consensus_mol_list.append(b) 
+            #b = mol_salt_remover(b)
+            #b = neutralize_atoms_in_mol(b)
+            consensus_mol_list.append(neutralize_atoms_in_mol(mol_salt_remover(b)))
             counter_2 +=1
         else:
             consensus_mol_list.append(np.nan)
-            
+
     merge_mol.consensus_mol_list = consensus_mol_list
     consensus_mol_list = []
     print('Total mol object from the list 1 = '+str(counter_1))
@@ -150,17 +159,21 @@ def mol_to_SMILES_iso(mol_list):
 	
     print('Converting mol objects to SMILES iso')
     smiles_list = []
+
+
     for x in mol_list:
+        
         if x is not np.nan:
             try:
-                smiles_list.append(Chem.MolToSmiles(x, isomericSmiles=False))
+                smiles_list.append(standardize_smiles(remove_salt_from_SMILES(Chem.MolToSmiles(neutralize_atoms_in_mol(mol_salt_remover(x)), isomericSmiles=False))))
             except:
-                pass
+
                 smiles_list.append(np.nan)
+                pass
         else:
             smiles_list.append(np.nan)
             pass
-        
+
     mol_to_SMILES_iso.smiles_list = smiles_list
     smiles_list = []
 
@@ -168,17 +181,18 @@ def mol_to_SMILES(mol_list):
 	#Take a list of mol objects and convert to SMILES with stereoconfiguration
     print('Converting mol objects to SMILES')
     smiles_list = []
+
     for x in mol_list:
         if x is not np.nan:
             try:
-                smiles_list.append(Chem.MolToSmiles(x, isomericSmiles=True))
+                smiles_list.append(standardize_smiles(remove_salt_from_SMILES(Chem.MolToSmiles(neutralize_atoms_in_mol(mol_salt_remover(x)), isomericSmiles=True))))
             except:
                 pass
                 smiles_list.append(np.nan)
         else:
             smiles_list.append(np.nan)
             pass
-        
+    
     mol_to_SMILES.smiles_list = smiles_list
     smiles_list = []
 
@@ -190,6 +204,8 @@ def mol_to_INCHIKEY(mol_list):
     for x in mol_list:
         if x is not np.nan:
             try:
+                x = mol_salt_remover(x)
+                x = neutralize_atoms_in_mol(x)
                 inchikey_list.append(Chem.MolToInchiKey(x))
             except:
                 pass
@@ -209,6 +225,8 @@ def mol_to_INCHI(mol_list):
     for x in mol_list:
         if x is not np.nan:
             try:
+                x = mol_salt_remover(x)
+                x = neutralize_atoms_in_mol(x)
                 inchi_list.append(Chem.MolToInchi(x))
             except:
                 pass
@@ -220,17 +238,65 @@ def mol_to_INCHI(mol_list):
     mol_to_INCHI.inchi_list = inchi_list
     inchi_list = []  
     
-def clean_SMILES_list(smiles_list, smiles_list_output):
-    #Strip SMILES with salts
-    print(len(smiles_list))
-    smiles_list = [ x.split(".", 1)[0] for x in smiles_list]
-    #Remove remaining items with .
-    smiles_list = [ x for x in smiles_list if "." not in x ]
+#Remove salts from mol 
+def mol_salt_remover(mol):
+    remover = Chem.SaltRemover.SaltRemover(defnData="[Cl,F,Br,I,Na]")
     
-    #Remove duplicates and nan and len(x) < 3
-    
-    [smiles_list_output.append(x) for x in smiles_list if x not in smiles_list_output and len(x) > 2 and x != 'nan' and pd.isnull(x) == False]
-    smiles_list = []
+    try:
+        s = Standardizer()
+        mol = s.standardize(mol)
+        #return mol
 
-    print(len(smiles_list_output))
-    print('====')
+    except:
+        pass
+
+    try:
+        res, deleted = remover.StripMolWithDeleted(mol)
+        neutralize_atoms(res)
+        
+        if len(deleted) > 0:
+            print('  Salt(s) deleted in       : '+ str(Chem.MolToSmiles(mol)))
+            print('  Remaining neutral residue: '+ str(Chem.MolToSmiles(res)))   
+        res 
+            
+    except:
+        pass
+
+    return res
+
+def neutralize_atoms_in_mol(mol):
+    try: 
+        pattern = Chem.MolFromSmarts("[+1!h0!$([*]~[-1,-2,-3,-4]),-1!$([*]~[+1,+2,+3,+4])]")
+        at_matches = mol.GetSubstructMatches(pattern)
+        at_matches_list = [y[0] for y in at_matches]
+        if len(at_matches_list) > 0:
+            for at_idx in at_matches_list:
+                atom = mol.GetAtomWithIdx(at_idx)
+                chg = atom.GetFormalCharge()
+                hcount = atom.GetTotalNumHs()
+                atom.SetFormalCharge(0)
+                atom.SetNumExplicitHs(hcount - chg)
+                atom.UpdatePropertyCache()
+
+    except:
+        print('Neutralize atoms failed')
+        print(mol)
+        raise
+
+    return mol
+
+def remove_salt_from_SMILES(smiles):
+    try:
+        if '.' in smiles:
+            print('  Salt(s) deleted in       : '+ str(smiles))
+            smiles = smiles.split(".", 3)[0]
+            smiles = standardize_smiles(smiles)
+            mol = Chem.MolFromSmiles(smiles)
+            neutralize_atoms_in_mol(mol)
+            smiles = Chem.MolToSmiles(mol)
+            print('  Remaining residue        : '+ str(smiles))
+        return smiles
+
+    except:
+        raise
+        
