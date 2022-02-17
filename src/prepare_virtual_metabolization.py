@@ -43,7 +43,7 @@ def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smile
 def print_compound_name_for_tags(df_annotations):
         mask = (df_annotations['tags'].astype('str').str.len() > 4)
         df = df_annotations.loc[mask]
-        df.drop_duplicates(subset=['Compound_Name'], inplace=True)
+        df = df.drop_duplicates(subset=['Compound_Name'])
         return df.sort_values(['tags'])[['tags','Compound_Name']]
     
 
