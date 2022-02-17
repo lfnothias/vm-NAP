@@ -13,7 +13,10 @@ import os
 import sys
 
 # Run SyGMa on two lists of SMILES and compound name in batch
-def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name, batch_size):
+def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name):
+    
+    #Define the batch_size based on number of phase
+    batch_size = int(100/(math.exp(phase_1_cycle))/(math.exp(phase_2_cycle)))
     
     print('=== Starting SyGMa computation ===')
     print('Number of compounds = '+str(len(list_smiles)))
