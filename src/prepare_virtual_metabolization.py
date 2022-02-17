@@ -9,6 +9,7 @@ def print_compound_names(list_compounds):
     for item in sorted(list_compounds):
         print('\''+item+'\',')
     del list_compounds
+
     
     
 def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smiles_planar_column=False):
@@ -39,19 +40,12 @@ def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smile
     return df_annotations
 
 
-
 def print_compound_name_for_tags(df_annotations):
-    # Get set of tags
-    tags = set(df_annotations['tags'])
-    print('These are the compounds with tags:')
+        mask = (df_annotations['tags'].astype('str').str.len() > 4)
+        df = df_annotations.loc[mask]
+        df.drop_duplicates(subset=['Compound_Name'], inplace=True)
+        return df.sort_values(['tags'])[['tags','Compound_Name']]
     
-    # Print Compound_Name for each tag
-    for x in list(tags):
-        if len(x)>2:
-            print('Tag: \''+x+'\'')
-            print('\t\''+df_annotations.loc[df_annotations['tags'] == str(x), 'Compound_Name'].iloc[0]+'\'')
-            
-            
 
 def df_annotations_filtering(df_annotations, compound_name=False, tags=False):
     #If compound names or tags are available, we generate subtables
