@@ -13,7 +13,8 @@ import os
 import sys
 
 # Run SyGMa on two lists of SMILES and compound name in batch
-def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name):
+def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name, compound_name):
+
     
     #Define the batch_size based on number of phase
     batch_size = int(100/(math.exp(phase_1_cycle))/(math.exp(phase_2_cycle)))
@@ -32,7 +33,7 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
     [sygma.ruleset['phase2'], int(phase_2_cycle)]])
     
     # Create placeholder dataframe file
-    df = pd.DataFrame(data=None, columns=['metabolite', 'score', 'parent', 'pathway', 'Compound_Name'])
+    df = pd.DataFrame(data=None, columns=['metabolite', 'score', 'parent', 'pathway', compound_name])
     df_master = df
     df.to_csv('sygma_temp_output.tsv', sep='\t')
     df_master.to_csv('sygma_temp_master.tsv', sep='\t')
@@ -46,7 +47,7 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
         list_smiles_batch =  list_smiles[i:i + batch_size]
         list_compound_name_batch = list_compound_name[i:i + batch_size]
            
-        df2 = pd.DataFrame(data=None, columns=['metabolite', 'score', 'parent', 'pathway', 'Compound_Name'])
+        df2 = pd.DataFrame(data=None, columns=['metabolite', 'score', 'parent', 'pathway', compound_name])
         
         # Running SyGMa on each batch
         for a, b in zip(list_smiles_batch, list_compound_name_batch):
@@ -84,7 +85,7 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
                 df = df.dropna(subset=['pathway']) 
                 del pathway
                 df['pathway'] = df['pathway'].astype(str).str[:75]
-                df['Compound_Name'] = b[:50]
+                df[compound_name] = b[:50]
                 del b
                 df2 = df2.append(df[:top_sygma_candidates], ignore_index=True)
                 del df
@@ -107,8 +108,8 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
     df_master = df_master.iloc[: , 1:]
                       
     df_master['score'] = df_master['score'].round(3)
-    df_master['Compound_Name_SyGMa'] = df_master['pathway'] + df_master['score'].astype(str)+ '; '+ df_master['Compound_Name'] 
-    df_master["Compound_Name_SyGMa"] = df_master["Compound_Name_SyGMa"].str.replace("\n", "")
+    df_master[compound_name+'_SyGMa'] = df_master['pathway'] + df_master['score'].astype(str)+ '; '+ df_master[compound_name] 
+    df_master[compound_name+'_SyGMa'] = df_master[compound_name+'_SyGMa'].str.replace("\n", "")
 
     print('Number of SyGMA candidates = '+str(df_master.shape[0]))
     print('Number of unique SyGMA candidates = '+str(len(df_master .metabolite.unique())))

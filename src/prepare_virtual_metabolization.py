@@ -69,7 +69,7 @@ def df_annotations_filtering(df_annotations, compound_name=False, tags=False):
 
 
 
-def prepare_for_virtual_metabolization(df_annotations, smiles_column, smiles_planar_column, drop_duplicated_structure = True, use_planar_structure = True,):
+def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_planar_column,  smiles_column=False, drop_duplicated_structure = True, use_planar_structure = True):
     
     # Input: consolidate GNPS annotation table
     # Do some duplicate filtering and select planar or stereo structure
@@ -88,7 +88,7 @@ def prepare_for_virtual_metabolization(df_annotations, smiles_column, smiles_pla
                 
             df_annotations = df_annotations.drop_duplicates(subset=smiles_planar_column, keep='first')
 
-        list_compound_name = list(df_annotations['Compound_Name'])
+        list_compound_name = list(df_annotations[compound_name])
         list_smiles = list(df_annotations[smiles_planar_column])
         print('Number of unique planar SMILES considered = '+str(len(list_smiles)))
     
@@ -104,7 +104,7 @@ def prepare_for_virtual_metabolization(df_annotations, smiles_column, smiles_pla
             
             df_annotations = df_annotations.drop_duplicates(subset=smiles_column, keep='first')
 
-        list_compound_name = list(df_annotations['Compound_Name'])
+        list_compound_name = list(df_annotations[compound_name])
         list_smiles = list(df_annotations[smiles_column])
         print('Number of unique SMILES = '+str(len(list_smiles)))
         
