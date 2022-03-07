@@ -183,7 +183,7 @@ def run_biotransformer(list_smiles, list_compound_name, type_of_biotransformatio
 
     
 #Write out the results
-def export_for_SIRIUS(input_df_name):
+def export_for_SIRIUS(input_df_name, compound_name):
     df_new = pd.read_csv(input_df_name, sep='\t')
     
     print('Number of metabolites = ' +str(df_new.shape[0]))
@@ -191,13 +191,13 @@ def export_for_SIRIUS(input_df_name):
     try:
         #SyGMa
         df_new = df_new.dropna(subset=['metabolite']) 
-        df_new = df_new[['metabolite', 'Compound_Name_SyGMa']]
-        df_new = df_new.rename(columns={"metabolite": "Smiles", "Compound_Name_SyGMa": "name"})
+        df_new = df_new[['metabolite', compound_name+'_SyGMa']]
+        df_new = df_new.rename(columns={"metabolite": "Smiles", compound_name+'_SyGMa': "name"})
     except:
         #BioTransformer
         df_new = df_new.dropna(subset=['SMILES']) 
         df_new = df_new[['SMILES', 'Compound_Name_BioTransformer']]
-        df_new = df_new.rename(columns={"SMILES": "Smiles", "Compound_Name_BioTransformer": "name"})
+        df_new = df_new.rename(columns={"SMILES": "Smiles", compound_name+"_BioTransformer": "name"})
 
     df_new = df_new.drop_duplicates(subset='name', keep='first')
     df_new = df_new.drop_duplicates(subset='Smiles', keep='first')
@@ -206,7 +206,7 @@ def export_for_SIRIUS(input_df_name):
     df_new.to_csv(input_df_name[:-4]+'_SIRIUS.tsv', sep = '\t', index = False)
     
 
-def export_for_NAP(input_df_name):
+def export_for_NAP(input_df_name, compound_name):
     df_new = pd.read_csv(input_df_name, sep='\t')
 
     print('Number of metabolites = ' +str(df_new.shape[0]))  
@@ -214,15 +214,15 @@ def export_for_NAP(input_df_name):
     try:
         #SyGMa
         df_new = df_new.dropna(subset=['metabolite']) 
-        df_new = df_new[['metabolite', 'Compound_Name_SyGMa']]
+        df_new = df_new[['metabolite', compound_name+'_SyGMa']]
         df_new = df_new.drop_duplicates(subset='metabolite', keep='first')
-        df_new = df_new.drop_duplicates(subset='Compound_Name_SyGMa', keep='first')
+        df_new = df_new.drop_duplicates(subset=compound_name+'_SyGMa', keep='first')
     except:
         #BioTransformer
         df_new = df_new.dropna(subset=['SMILES']) 
-        df_new = df_new[['SMILES', 'Compound_Name_BioTransformer']]
+        df_new = df_new[['SMILES',compound_name+'_BioTransformer']]
         df_new = df_new.drop_duplicates(subset='SMILES', keep='first')
-        df_new = df_new.drop_duplicates(subset='Compound_Name_BioTransformer', keep='first')
+        df_new = df_new.drop_duplicates(subset=compound_name+'_SyGMa', keep='first')
 
     print('Number of unique metabolites considered = ' +str(df_new.shape[0]))   
     df_new.to_csv(input_df_name[:-4]+'_NAP.tsv', sep = '\t', index = False, header= False)
