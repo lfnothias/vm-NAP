@@ -114,7 +114,16 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
     return df_annotations
 
 
+def load_extra_compounds(path):
+    #Table must be two columns tab-separeted with compound and smiles (no headers).
+    extra_compounds_table = pd.read_csv(extra_compounds_table_file, sep='\t')
+    load_extra_compounds.extra_compound_names = extra_compounds_table.iloc[:,0].to_list()
+    load_extra_compounds.extra_compound_smiles = extra_compounds_table.iloc[:,1].to_list()
 
+    if len(extra_compound_name) != len(extra_compound_smiles):
+        print('!!!!!! VERIFY THE INTEGRITY OF THE FILE FOR EXTRA COMPOUNDS !!!!!!!!! -> DIFFERENT NUMBER OF COMPOUNDS NAME AND SMILES')
+        
+        
 def append_to_list_if_not_present(base_list, extra_list):
     #Append items if not already in the list
     print('Initial number of items in the list = '+str(len(base_list)))
