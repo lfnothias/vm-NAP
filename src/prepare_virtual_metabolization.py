@@ -114,7 +114,16 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
     return df_annotations
 
 
+def load_extra_compounds(path):
+    #Table must be two columns tab-separeted with compound and smiles (no headers).
+    extra_compounds_table = pd.read_csv(extra_compounds_table_file, sep='\t')
+    load_extra_compounds.extra_compound_names = extra_compounds_table.iloc[:,0].to_list()
+    load_extra_compounds.extra_compound_smiles = extra_compounds_table.iloc[:,1].to_list()
 
+    if len(extra_compound_name) != len(extra_compound_smiles):
+        print('!!!!!! VERIFY THE INTEGRITY OF THE FILE FOR EXTRA COMPOUNDS !!!!!!!!! -> DIFFERENT NUMBER OF COMPOUNDS NAME AND SMILES')
+        
+        
 def append_to_list_if_not_present(base_list, extra_list):
     #Append items if not already in the list
     print('Initial number of items in the list = '+str(len(base_list)))
@@ -124,3 +133,34 @@ def append_to_list_if_not_present(base_list, extra_list):
     print('Final number of items in the list = '+str(len(base_list)))
     
     return base_list
+
+
+def load_csifingerid_cosmic_annotations(path_compound_identifications): 
+    df = pd.read_csv(path_compound_identifications,
+                                sep='\t', 
+                                usecols =['id','ConfidenceScore','ZodiacScore','name','links','smiles'], 
+                                low_memory=False)
+    df.name.replace(np.nan, 'no_name', regex=True, inplace=True)
+    return df 
+
+def df_csifingerid_cosmic_annotations_filtering(compound_identification_table, zodiac_score=False, confidence_score=False, links=False):
+    
+    if zodiac_score != False:
+        print('Filtering with ZodiacScore >= '+str(zodiac_score))
+        compound_identification_table = compound_identification_table[compound_identification_table['ZodiacScore']>=zodiac_score]
+        print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        
+    if confidence_score != 0:
+        print('Filtering with Confidence Score >= '+str(confidence_score))
+        compound_identification_table = compound_identification_table[compound_identification_table['ConfidenceScore']>=confidence_score]
+        print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        
+    if links != False:
+        print('Filtering with database links >= '+str(links))
+        compound_identification_table = compound_identification_table[compound_identification_table['links'].str.contains(links, na=False)]
+        print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        
+    if zodiac_score == False and confidence_score == False and links == False:
+        print('No filter were applied !')
+        
+    return compound_identification_table
