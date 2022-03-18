@@ -11,7 +11,7 @@ View the notebook in [non-interactive view.](https://nbviewer.jupyter.org/github
 
 The interative notebook can be accessed via this badge -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/2202_vm-NAP-GNPS.ipynb)]
 
-[Alternative - The interative notebook can be accessed via this badge -> [![Binder](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/IODA_notebooks_welcome)]
+Alternative - The interative notebook can be accessed via this badge -> [![Binder](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/IODA_notebooks_welcome)]
 
 Note that for large computation (many compounds, many metabolization steps), the use of notebook in Binder will be limited (2GB of max RAM).
 
