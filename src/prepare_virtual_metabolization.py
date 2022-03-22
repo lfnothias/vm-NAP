@@ -116,25 +116,26 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
 
 def load_extra_compounds(path):
     #Table must be two columns tab-separeted with compound and smiles (no headers).
-    extra_compounds_table = pd.read_csv(extra_compounds_table_file, sep='\t')
+    extra_compounds_table = pd.read_csv(path, sep='\t')
     load_extra_compounds.extra_compound_names = extra_compounds_table.iloc[:,0].to_list()
     load_extra_compounds.extra_compound_smiles = extra_compounds_table.iloc[:,1].to_list()
 
-    if len(extra_compound_name) != len(extra_compound_smiles):
+    if len(load_extra_compounds.extra_compound_names) != len(load_extra_compounds.extra_compound_smiles):
         print('!!!!!! VERIFY THE INTEGRITY OF THE FILE FOR EXTRA COMPOUNDS !!!!!!!!! -> DIFFERENT NUMBER OF COMPOUNDS NAME AND SMILES')
         
-        
-def append_to_list_if_not_present(base_list, extra_list):
+
+def append_to_list_if_not_present(base_list_name, base_list_smiles, extra_list_names, extra_list_smiles):
     #Append items if not already in the list
-    print('Initial number of items in the list = '+str(len(base_list)))
-    for i in extra_list:
-        if i not in base_list:
-           base_list.append(i)
-    print('Final number of items in the list = '+str(len(base_list)))
+    print('Initial number of compound name the list = '+str(len(base_list_name)))
+    print('Initial number of smiles in the list = '+str(len(base_list_smiles)))
+    for n, s in zip(extra_list_names, extra_list_smiles):
+        if s not in base_list_smiles:
+           base_list_smiles.append(s)
+           base_list_name.append(n)
+    print('Final number of compound name the list = '+str(len(base_list_name)))
+    print('Final number of smiles in the list = '+str(len(base_list_smiles)))
     
-    return base_list
-
-
+    
 def load_csifingerid_cosmic_annotations(path_compound_identifications): 
     df = pd.read_csv(path_compound_identifications,
                                 sep='\t', 
