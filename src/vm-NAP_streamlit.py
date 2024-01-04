@@ -101,7 +101,7 @@ with column3:
     
 if run_button != "None":
     # Construct the command to run vm-NAP_processing.py
-    command = ["python", "vm-NAP_processing.py"]
+    command = ["python", "src/vm-NAP_processing.py"]
     
     if  job_id.lower() != 'false':
         # Add arguments based on the user's input

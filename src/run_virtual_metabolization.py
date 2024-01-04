@@ -184,6 +184,13 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
             # Check if the source directory exists
             if os.path.exists(source_dir):
                 # Move each file in the source directory to the destination directory
+                # Rename README.md to README_BioTransformer.md
+                readme_path = os.path.join(dest_dir, "README.md")
+                new_readme_path = os.path.join(dest_dir, "README_BioTransformer.md")
+                if os.path.exists(readme_path):
+                    os.rename(readme_path, new_readme_path)
+                    print("Renamed README.md to README_BioTransformer.md")
+
                 for filename in os.listdir(source_dir):
                     source_file = os.path.join(source_dir, filename)
                     dest_file = os.path.join(dest_dir, filename)
@@ -196,7 +203,7 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
             
         # Prepare pandas tables
         df_bio = pd.DataFrame(data=None)
-        print('######  Running BioTransformer takes approximatively 3-60 secs per compounds depending on biotransformation parameters')
+        print('######  Running BioTransformer takes approximatively 3-60 secs per compound depending on biotransformation parameters')
         print('     Number of compounds being virtually metabolized with BioTransformer =  '+str(len(list_smiles)))
         
         col_list = ['InChIKey',	'SMILES','PUBCHEM_CID','Molecular formula','Major Isotope Mass',
