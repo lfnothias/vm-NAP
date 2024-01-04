@@ -16,6 +16,3 @@ dependencies:
   - pip
   - pip:
       - streamlit
-  # Uncomment the next line if Java is needed
-  # - openjdk
-  # - java-jdk
