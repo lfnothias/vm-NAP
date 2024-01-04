@@ -1,0 +1,13 @@
+numpy
+pandas
+streamlit
+ipython
+python=3.11  # or another version as per your requirement
+sygma
+rdkit
+molvs
+jupyter
+ipykernel
+openjdk
+ipython
+streamlit
