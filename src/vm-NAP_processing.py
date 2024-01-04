@@ -9,13 +9,22 @@ except ImportError:
 import sys
 import logging
 import io
+
 import os
+import sys
 
-# Add custom module paths
-sys.path.append('gnps_postprocessing/lib')
-sys.path.append('src')
+# Get the directory where the script is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Import custom modules
+# Construct paths to the custom module directories
+gnps_lib_path = os.path.join(script_dir, 'gnps_postprocessing', 'lib')
+src_path = os.path.join(script_dir, 'src')
+
+# Add custom module paths to sys.path
+sys.path.append(gnps_lib_path)
+sys.path.append(src_path)
+
+# Now you can import your custom modules
 from gnps_download_results import *
 from consolidate_structures import *
 from gnps_results_postprocess import *
