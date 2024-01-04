@@ -1,6 +1,6 @@
 name: vm-NAP Processing Tests
 
-on: [push, pull_request]
+on: [release]
 
 jobs:
   test:
