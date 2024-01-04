@@ -10,30 +10,14 @@ import sys
 import logging
 import io
 import os
-
-# Check if running in GitHub Actions
-if 'GITHUB_WORKSPACE' in os.environ:
-    # GitHub Actions environment
-    github_workspace = os.environ['GITHUB_WORKSPACE']
-    gnps_lib_path = os.path.join(github_workspace, 'gnps_postprocessing', 'lib')
-    src_path = os.path.join(github_workspace, 'src')
-else:
-    # Local environment
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    gnps_lib_path = os.path.join(script_dir, 'gnps_postprocessing', 'lib')
-    src_path = os.path.join(script_dir, 'src')
-
-# Add custom module paths to sys.path
-sys.path.append(gnps_lib_path)
-sys.path.append(src_path)
+from datetime import datetime
 
 # Now you can import your custom modules
-from gnps_download_results import *
-from consolidate_structures import *
-from gnps_results_postprocess import *
-from prepare_virtual_metabolization import *
-from run_virtual_metabolization import *
-from datetime import datetime
+from gnps_postprocessing.lib.gnps_download_results import *
+from gnps_postprocessing.lib.consolidate_structures import *
+from gnps_postprocessing.lib.gnps_results_postprocess import *
+from src.prepare_virtual_metabolization import *
+from src.run_virtual_metabolization import *
 
 class StreamToLogger:
     """
