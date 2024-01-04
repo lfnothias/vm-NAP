@@ -9,16 +9,19 @@ except ImportError:
 import sys
 import logging
 import io
-
 import os
-import sys
 
-# Get the directory where the script is located
-script_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Construct paths to the custom module directories
-gnps_lib_path = os.path.join(script_dir, 'gnps_postprocessing', 'lib')
-src_path = os.path.join(script_dir, 'src')
+# Check if running in GitHub Actions
+if 'GITHUB_WORKSPACE' in os.environ:
+    # GitHub Actions environment
+    github_workspace = os.environ['GITHUB_WORKSPACE']
+    gnps_lib_path = os.path.join(github_workspace, 'gnps_postprocessing', 'lib')
+    src_path = os.path.join(github_workspace, 'src')
+else:
+    # Local environment
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    gnps_lib_path = os.path.join(script_dir, 'gnps_postprocessing', 'lib')
+    src_path = os.path.join(script_dir, 'src')
 
 # Add custom module paths to sys.path
 sys.path.append(gnps_lib_path)
