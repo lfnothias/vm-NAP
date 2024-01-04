@@ -16,6 +16,7 @@ jobs:
         environment-file: environment.yml
         activate-environment: vm-NAP
         auto-activate-base: false
+        submodules: 'recursive'
 
     - name: List directory contents
       run: |
