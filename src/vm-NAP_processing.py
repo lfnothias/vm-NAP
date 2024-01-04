@@ -12,6 +12,10 @@ import io
 import os
 from datetime import datetime
 
+# Get the absolute path of the root directory (one level up from 'src')
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(root_dir)
+
 # Now you can import your custom modules
 from gnps_postprocessing.lib.gnps_download_results import *
 from gnps_postprocessing.lib.consolidate_structures import *
