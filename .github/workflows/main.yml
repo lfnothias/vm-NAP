@@ -22,6 +22,9 @@ jobs:
     - name: Check Python Version
       run: python --version
 
+    - name: List installed Conda packages
+      run: conda list
+      
     - name: Check Current Working Directory and Path
       run: |
         echo "Current directory: $(pwd)"
@@ -36,7 +39,9 @@ jobs:
         else
           echo "gnps_postprocessing directory does not exist"
         fi
-        
+    - name: List installed Conda packages
+      run: conda list
+      
     - name: Run vm-NAP Processing Tests
       run: |
         python src/vm-NAP_processing.py 
