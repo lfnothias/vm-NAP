@@ -26,22 +26,22 @@ jobs:
         python vm-NAP_processing.py --debug --max_compounds_debug=20 --job_id='bbee697a63b1400ea585410fafc95723' --run_sygma --run_biotransformer --type_of_biotransformation='hgut' --sirius_input_file 'input/compound_identifications.tsv'
         python vm-NAP_processing.py --debug --job_id False --sirius_input_file 'input/compound_identifications.tsv'
         python vm-NAP_processing.py --debug --max_compounds_debug=20 --job_id='bbee697a63b1400ea585410fafc95723' --sirius_input_file 'input/compound_identifications.tsv'
-      - name: Test with Extra Compounds and Custom Biotransformation Mode
+    - name: Test with Extra Compounds and Custom Biotransformation Mode
       run: |
         python vm-NAP_processing.py --extra_compounds_table_file='input/extra_compounds-UTF8.tsv' --run_biotransformer --mode='-k pred -b allHuman -s 2 -cm 3' --debug
-      - name: Test with GNPS Data, SyGMa, and BioTransformer
+    - name: Test with GNPS Data, SyGMa, and BioTransformer
         run: |
           python vm-NAP_processing.py --debug --run_sygma --max_compounds_debug=10 --job_id='bbee697a63b1400ea585410fafc95723' --ionisation_mode='pos' --run_sygma --run_biotransformer --type_of_biotransformation='hgut' --sirius_input_file 'input/compound_identifications.tsv'
-      - name: Test with Full GNPS Parameters and Debug Mode
+    - name: Test with Full GNPS Parameters and Debug Mode
         run: |
           python vm-NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --ionisation_mode='neg' --max_ppm_error=15 --min_cosine=0.7 --shared_peaks=4 --max_spec_charge=3 --debug --sirius_input_file 'input/compound_identifications.tsv'
-      - name: Test with Extra Compounds, Custom Biotransformation, and SyGMa
+    - name: Test with Extra Compounds, Custom Biotransformation, and SyGMa
         run: |
           python vm-NAP_processing.py --extra_compounds_table_file='input/extra_compounds-UTF8.tsv' --run_biotransformer --mode='-k pred -b allHuman -s 2 -cm 3' --run_sygma --phase_1_cycle=2 --phase_2_cycle=1 --top_sygma_candidates=5 --debug
-      - name: Test with Metadata Filtering and SIRIUS Parameters
+    - name: Test with Metadata Filtering and SIRIUS Parameters
         run: |
           python vm-NAP_processing.py --compound_name_to_keep 'a' --sirius_input_file 'input/compound_identifications.tsv' --zodiac_score=0.8 --confidence_score=0.2 --db_links='KEGG' --debug
-      - name: Test with Planar Structure and BioTransformer Standard Mode
+    - name: Test with Planar Structure and BioTransformer Standard Mode
         run: |
           python vm-NAP_processing.py --use_planar_structure_boolean=True --run_biotransformer --mode='standard' --type_of_biotransformation='hgut' --number_of_steps=2 --debug
     - name: Test with All Parameters Combined
