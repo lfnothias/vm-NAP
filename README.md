@@ -3,17 +3,13 @@
 This notebook downloads results of spectral annotations from [classical molecular networking](https://ccms-ucsd.github.io/GNPSDocumentation/networking/) or [feature-based molecular networking ](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking/)job from GNPS [[http://gnps.ucsd.edu](http://gnps.ucsd.edu)] and generate virtual metabolites either with SyGMa or BioTransformer. The resulting candidates can be used for [Network Annotation Propagation](https://ccms-ucsd.github.io/GNPSDocumentation/nap/) on GNPS or with [SIRIUS](https://boecker-lab.github.io/docs.sirius.github.io/install/).
 
 
-## Running the notebook
+## Running vm-NAP
 
-View the notebook in [non-interactive view.](https://nbviewer.jupyter.org/github/lfnothias/vm-NAP/blob/main/2105_vm-NAP-GNPS.ipynb)
+### vm-NAP web-app (cloud-based)
 
-### One-click cloud usage with Binder [Recommended]
+Click on the following link to launch the vm-NAP web-app. 
+Note that this is a streamlit temporary instance with limited ressources.
 
-The interactive notebook can be accessed via this badge -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/2202_vm-NAP-GNPS.ipynb)
-
-Alternative - The interactive notebook can be accessed via this badge an gesis server-> [![Binder](https://mybinder.org/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/2202_vm-NAP-GNPS.ipynb)
-
-Note that for large computation (many compounds, many metabolization steps), the use of notebook in Binder will be limited (2GB of max RAM).
 
 ### Local installation
 
@@ -24,10 +20,40 @@ Install locally in conda with:
 >In the terminal, navigate to the repository folder.
 
 > Install the environment with:
-`conda env vm-NAP --file environment.yml`
+`conda env --file environment.yml`
 
-It might require other depencies related ipython and jupter notebooks.
+> Initiate the environment:
+`conda activate vm-NAP`
 
+#### vm-NAP web-app locally
+
+> Start the streamlit app:
+
+```
+streamlit run vm-NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
+```
+
+#### vm-NAP commandline:
+
+> Representative command for the python script:
+
+```
+python vm-NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --run_sygma --run_biotransformer --sirius_input_file 'input/compound_identifications.tsv' --debug --max_compounds_debug=3
+```
+
+> Running this for help:
+
+```
+python vm-NAP_processing.py --help
+```
+
+
+### Jupyter notebook on Binder
+The interactive notebook can be accessed via this badge -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/2202_vm-NAP-GNPS.ipynb)
+
+Alternative - The interactive notebook can be accessed via this badge an gesis server-> [![Binder](https://mybinder.org/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/2202_vm-NAP-GNPS.ipynb)
+
+Note that this is also a temporary instance with limited ressources.
 ### Using vm-NAP with Network Annotation Propagation
 
 See the documentation for custom database in [NAP](https://ccms-ucsd.github.io/GNPSDocumentation/nap/#structure-database) and how to run Network Annotation Propagation (NAP) on GNPS [https://ccms-ucsd.github.io/GNPSDocumentation/nap/#structure-database](https://ccms-ucsd.github.io/GNPSDocumentation/nap/#structure-database).
@@ -35,7 +61,6 @@ See the documentation for custom database in [NAP](https://ccms-ucsd.github.io/G
 ### Using vm-NAP With SIRIUS
 
 See the documentation to generate the SIRIUS [custom database here](https://boecker-lab.github.io/docs.sirius.github.io/cli-standalone/#custom-database-tool).
-
 
 ## Spectral library requirement
 
