@@ -1,5 +1,10 @@
 import argparse
-from IPython.display import Markdown, display
+try:
+    from IPython.display import Markdown, display
+    # Your code that uses IPython here
+except ImportError:
+    # Fallback code for environments without IPython
+    pass
 import sys
 import logging
 import io
