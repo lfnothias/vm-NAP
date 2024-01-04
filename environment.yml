@@ -10,6 +10,7 @@ dependencies:
   - sygma
   - rdkit
   - molvs
+  - ipython
   - jupyter
   - ipykernel
   - openjdk
