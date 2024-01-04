@@ -19,12 +19,23 @@ jobs:
         activate-environment: vm-NAP
         auto-activate-base: false
 
-    - name: List directory contents
+    - name: Check Python Version
+      run: python --version
+
+    - name: Check Current Working Directory and Path
       run: |
-        pwd
-        ls -l
-        ls -l src/
-        ls -l gnps_postprocessing/lib/
+        echo "Current directory: $(pwd)"
+        echo "Python Path: $PYTHONPATH"
+        python -c "import sys; print(sys.path)"
+
+    - name: Check if gnps_postprocessing is present
+      run: |
+        if [ -d "gnps_postprocessing" ]; then
+          echo "gnps_postprocessing directory exists"
+          ls -l gnps_postprocessing/
+        else
+          echo "gnps_postprocessing directory does not exist"
+        fi
         
     - name: Run vm-NAP Processing Tests
       run: |
