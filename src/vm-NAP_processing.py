@@ -1,6 +1,7 @@
 import argparse
 try:
     from IPython.display import Markdown, display
+    import streamlit as st
     # Your code that uses IPython here
 except ImportError:
     # Fallback code for environments without IPython
@@ -9,7 +10,6 @@ import sys
 import logging
 import io
 import os
-import streamlit as st
 
 # Add custom module paths
 sys.path.append('gnps_postprocessing/lib')
