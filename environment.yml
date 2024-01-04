@@ -10,10 +10,10 @@ dependencies:
   - sygma
   - rdkit
   - molvs
-  - ipython
   - jupyter
   - ipykernel
   - openjdk
   - pip
+  - ipython
   - pip:
       - streamlit
