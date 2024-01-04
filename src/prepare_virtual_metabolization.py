@@ -3,6 +3,11 @@ import numpy as np
 import math
 import os
 import sys
+sys.path.append('gnps_postprocessing/lib')
+sys.path.append('src')
+from gnps_download_results import *
+from consolidate_structures import *
+from gnps_results_postprocess import *
 
 
 def print_compound_names(list_compounds):
@@ -10,7 +15,6 @@ def print_compound_names(list_compounds):
         print('\''+item+'\',')
     del list_compounds
 
-    
     
 def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smiles_planar_column=False):
     #Get info on consolidated GNPS annotation table
@@ -124,16 +128,22 @@ def load_extra_compounds(path):
         print('!!!!!! VERIFY THE INTEGRITY OF THE FILE FOR EXTRA COMPOUNDS !!!!!!!!! -> DIFFERENT NUMBER OF COMPOUNDS NAME AND SMILES')
         
 
-def append_to_list_if_not_present(base_list_name, base_list_smiles, extra_list_names, extra_list_smiles):
-    #Append items if not already in the list
-    print('Initial number of compound name the list = '+str(len(base_list_name)))
-    print('Initial number of smiles in the list = '+str(len(base_list_smiles)))
+def append_to_list_if_not_present(base_list_names, base_list_smiles, extra_list_names, extra_list_smiles):
+    print('Initial number of compound names in the list = ' + str(len(base_list_names)))
+    print('Initial number of SMILES in the list = ' + str(len(base_list_smiles)))
+
     for n, s in zip(extra_list_names, extra_list_smiles):
-        if s not in base_list_smiles:
-           base_list_smiles.append(s)
-           base_list_name.append(n)
-    print('Final number of compound name the list = '+str(len(base_list_name)))
-    print('Final number of smiles in the list = '+str(len(base_list_smiles)))
+        # Remove salts from SMILES and process the molecule
+        cleaned_smiles = remove_salt_from_SMILES(s) if '.' in s else s
+        cleaned_smiles = cleaned_smiles.replace('@', '')
+
+        if cleaned_smiles not in base_list_smiles:
+            base_list_smiles.append(cleaned_smiles)
+            base_list_names.append(n)
+
+    print('Final number of compound names in the list = ' + str(len(base_list_names)))
+    print('Final number of SMILES in the list = ' + str(len(base_list_smiles)))
+
     
     
 def load_csifingerid_cosmic_annotations(path_compound_identifications): 
