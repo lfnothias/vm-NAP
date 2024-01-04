@@ -10,14 +10,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: '3.8'  # Specify the Python version
-
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt  # Install the required packages
+        environment-file: environment.yml
+        activate-environment: vm-NAP
+        auto-activate-base: false
 
     - name: Run vm-NAP Processing Tests
       run: |
