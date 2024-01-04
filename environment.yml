@@ -3,17 +3,19 @@ channels:
   - conda-forge
   - 3d-e-Chem
   - bioconda
-  - rdkit
 dependencies:
+  - python=3.10  # or another version as per your requirement
   - numpy
   - pandas
   - sygma
-  - rdkit::rdkit
+  - rdkit
   - molvs
   - jupyter
   - ipykernel
+  - openjdk
   - pip
-  - streamlit
-  - java-jdk  
-
-  
+  - pip:
+      - streamlit
+  # Uncomment the next line if Java is needed
+  # - openjdk
+  # - java-jdk
