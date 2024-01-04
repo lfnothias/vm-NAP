@@ -17,6 +17,13 @@ jobs:
         activate-environment: vm-NAP
         auto-activate-base: false
 
+    - name: List directory contents
+      run: |
+        pwd
+        ls -l
+        ls -l src/
+        ls -l gnps_postprocessing/lib/
+        
     - name: Run vm-NAP Processing Tests
       run: |
         python src/vm-NAP_processing.py 
