@@ -19,6 +19,10 @@ jobs:
         activate-environment: vm-NAP
         auto-activate-base: false
 
+    - name: Install Pandas
+      run: |
+        conda activate vm-NAP
+
     - name: Install Submodule Dependencies
       run: |
         conda env update --name vm-NAP --file gnps_postprocessing/environment.yml
