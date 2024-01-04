@@ -8,12 +8,12 @@ dependencies:
   - numpy
   - pandas
   - sygma
-  #- java-jdk  
   - rdkit::rdkit
   - molvs
   - jupyter
   - ipykernel
   - pip
-    - streamlit
+  - streamlit
+  - java-jdk  
 
   
