@@ -11,13 +11,17 @@ jobs:
       uses: actions/checkout@v2
       with:
         submodules: 'recursive'
-      
+
     - name: Set up Conda
       uses: conda-incubator/setup-miniconda@v2
       with:
         environment-file: environment.yml
         activate-environment: vm-NAP
         auto-activate-base: false
+
+    - name: Install Submodule Dependencies
+      run: |
+        conda env update --name vm-NAP --file gnps_postprocessing/environment.yml
 
     - name: Check Python Version
       run: python --version
