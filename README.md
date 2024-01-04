@@ -30,7 +30,7 @@ Install locally in conda with:
 > Start the streamlit app:
 
 ```
-streamlit run vm-NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
+streamlit run src/vm-NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
 ```
 
 #### vm-NAP commandline:
@@ -38,20 +38,20 @@ streamlit run vm-NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
 > Representative command for the python script:
 
 ```
-python vm-NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --run_sygma --run_biotransformer --sirius_input_file 'input/compound_identifications.tsv' --debug --max_compounds_debug=3
+python src/vm-NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --run_sygma --run_biotransformer --sirius_input_file 'input/compound_identifications.tsv' --debug --max_compounds_debug=3
 ```
 
 > Running this for help:
 
 ```
-python vm-NAP_processing.py --help
+python src/vm-NAP_processing.py --help
 ```
 
 
 ### Jupyter notebook on Binder
-The interactive notebook can be accessed via this badge -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/2202_vm-NAP-GNPS.ipynb)
+The interactive notebook can be accessed via this badge -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/2401_vm-NAP-demo-notebook.ipynb)
 
-Alternative - The interactive notebook can be accessed via this badge an gesis server-> [![Binder](https://mybinder.org/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/2202_vm-NAP-GNPS.ipynb)
+Alternative - The interactive notebook can be accessed via this badge an gesis server-> [![Binder](https://mybinder.org/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/2401_vm-NAP-demo-notebook.ipynb)
 
 Note that this is also a temporary instance with limited ressources.
 ### Using vm-NAP with Network Annotation Propagation

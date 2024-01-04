@@ -7,7 +7,6 @@ channels:
 dependencies:
   - numpy
   - pandas
-  #- rdkit
   - sygma
   #- java-jdk  
   - rdkit::rdkit
