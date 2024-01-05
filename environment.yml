@@ -7,3 +7,13 @@ dependencies:
   - python=3.11  # or another version as per your requirement
   - numpy
   - pandas
+  - sygma
+  - rdkit
+  - molvs
+  - jupyter
+  - ipykernel
+  - openjdk
+  - pip
+  - ipython
+  - pip:
+      - streamlit
