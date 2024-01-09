@@ -13,5 +13,6 @@ dependencies:
   - pip
   - ipython
   - unzip
+  - requests
   - pip:
       - streamlit
