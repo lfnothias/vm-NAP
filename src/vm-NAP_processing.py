@@ -221,11 +221,11 @@ def main(args):
                             prepare_for_virtual_metabolization.list_compound_name,
                             args.type_of_biotransformation, args.number_of_steps, dynamic_string)
 
-        display(Markdown(run_biotransformer3.file_name_biotransf))
+        display(Markdown(run_biotransformer3.markdown_link_biotransf))
         print('Results are at: '+run_biotransformer3.file_name_biotransf)
-        display(Markdown(run_biotransformer3.file_name_biotransf_nap))
+        display(Markdown(run_biotransformer3.markdown_link_biotransf_nap))
         print('Results are at: '+run_biotransformer3.file_name_biotransf_nap)
-        display(Markdown(run_biotransformer3.file_name_biotransf_sirius))
+        display(Markdown(run_biotransformer3.markdown_link_biotransf_sirius))
         print('Results are at: '+run_biotransformer3.file_name_biotransf_sirius)
 
     print( '')
