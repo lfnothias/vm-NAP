@@ -1,0 +1,13 @@
+numpy
+pandas
+rdkit
+rdkit-pypi
+jupyter
+rdkit
+ipykernel
+ipython
+streamlit
+requests
+
+# For molvs, directly use the PyPI package
+molvs
