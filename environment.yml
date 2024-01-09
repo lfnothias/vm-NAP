@@ -7,9 +7,6 @@ dependencies:
   - python=3.9
   - numpy
   - pandas
-  - sygma
-  - rdkit
-  - molvs
   - jupyter
   - ipykernel
   - openjdk
