@@ -20,7 +20,7 @@ Install locally in conda with:
 >In the terminal, navigate to the repository folder.
 
 > Install the environment with:
-`conda env --file environment.yml`
+`conda env --file create environment.yml`
 
 > Initiate the environment:
 `conda activate vm-NAP`
