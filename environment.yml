@@ -15,5 +15,6 @@ dependencies:
   - openjdk
   - pip
   - ipython
+  - unzip
   - pip:
       - streamlit
