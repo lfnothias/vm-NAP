@@ -11,4 +11,4 @@ requests
 
 # For molvs, directly use the PyPI package
 molvs
-https://github.com/lfnothias/gnps_postprocessing.git
+https://github.com/lfnothias/gnps_postprocessing.git#gnps_postprocessing
