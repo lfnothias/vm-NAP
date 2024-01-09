@@ -10,6 +10,7 @@ from rdkit import Chem
 from rdkit import RDLogger
 import shutil
 import traceback
+import requests
 
 lg = RDLogger.logger()
 lg.setLevel(RDLogger.ERROR)
@@ -166,15 +167,20 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
 
         # Check if the JAR file exists, and download it if it doesn't
         if not os.path.exists('biotransformer3.zip'):
-            print(f"Downloading biotransformer3 ...")
-            subprocess.check_call(["curl", "-C", "-", "https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip", "-o", 'biotransformer3.zip'])
+        print(f"Downloading biotransformer3 ...")
+            url = 'https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip'
+            r = requests.get(url, allow_redirects=True)
+            open('biotransformer3.zip', 'wb').write(r.content)
             print("Download complete.")
         else:
             print(f"BioTransformer was already downloaded - skipping download.")
         
         try:
             if not os.path.exists('BioTransformer3.0_20230525.jar'):
-                subprocess.check_call(["unzip", "-o", "-q", "biotransformer3.zip"])
+                # Unzip the file using zipfile
+                with zipfile.ZipFile('biotransformer3.zip', 'r') as zip_ref:
+                    zip_ref.extractall('.')
+                print("BioTransformer is unzipped.")
             else:
                 print(f"BioTransformer is already unzipped - skipping unzip.")
 
@@ -200,6 +206,10 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
 
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
+
+    except Exception as e:
+        print(f"Error checking Java version or downloading BioTransformer: {e}")
+
             
         # Prepare pandas tables
         df_bio = pd.DataFrame(data=None)
