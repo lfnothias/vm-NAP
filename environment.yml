@@ -12,9 +12,7 @@ dependencies:
   - rdkit
   - molvs
   - ipykernel
-  - openjdk
   - pip
   - ipython
-  - unzip
   - pip:
       - streamlit
