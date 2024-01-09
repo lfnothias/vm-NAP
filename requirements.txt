@@ -8,9 +8,6 @@ ipykernel
 ipython
 streamlit
 
-# rdkit is available as rdkit-pypi on PyPI
-sygma
-
 # For molvs, directly use the PyPI package
 molvs
 
