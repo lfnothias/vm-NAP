@@ -1,0 +1,13 @@
+numpy
+pandas
+jupyter
+ipykernel
+ipython
+streamlit
+sygma
+
+# rdkit is available as rdkit-pypi on PyPI
+rdkit-pypi
+
+# For molvs, directly use the PyPI package
+molvs
