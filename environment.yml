@@ -2,12 +2,15 @@ name: vm-NAP
 channels:
   - conda-forge
   - 3d-e-Chem
+  - rdkit
   - bioconda
 dependencies:
-  - python=3.9
+  - python
   - numpy
   - pandas
   - jupyter
+  - rdkit
+  - molvs
   - ipykernel
   - openjdk
   - pip
