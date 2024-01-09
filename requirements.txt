@@ -6,7 +6,7 @@ ipython
 streamlit
 
 # rdkit is available as rdkit-pypi on PyPI
-rdkit-pypi
+rdkit
 sygma
 
 # For molvs, directly use the PyPI package
