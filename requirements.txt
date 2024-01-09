@@ -1,13 +1,16 @@
 numpy
 pandas
+rdkit
+rdkit-pypi
 jupyter
+rdkit
 ipykernel
 ipython
 streamlit
 
 # rdkit is available as rdkit-pypi on PyPI
-rdkit
 sygma
 
 # For molvs, directly use the PyPI package
 molvs
+
