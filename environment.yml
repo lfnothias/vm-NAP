@@ -4,7 +4,7 @@ channels:
   - 3d-e-Chem
   - bioconda
 dependencies:
-  - python=3.11  # or another version as per your requirement
+  - python=3.9
   - numpy
   - pandas
   - sygma
