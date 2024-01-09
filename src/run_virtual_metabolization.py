@@ -185,8 +185,8 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
             if os.path.exists(source_dir):
                 # Move each file in the source directory to the destination directory
                 # Rename README.md to README_BioTransformer.md
-                readme_path = os.path.join(dest_dir, "README.md")
-                new_readme_path = os.path.join(dest_dir, "README_BioTransformer.md")
+                readme_path = os.path.join(source_dir, "README.md")
+                new_readme_path = os.path.join(source_dir, "README_BioTransformer.md")
                 if os.path.exists(readme_path):
                     os.rename(readme_path, new_readme_path)
                     print("Renamed README.md to README_BioTransformer.md")
