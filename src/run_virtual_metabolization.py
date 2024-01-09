@@ -18,6 +18,21 @@ lg.setLevel(RDLogger.ERROR)
 import os
 import sys
 
+# Function to check and install packages
+def install_package(package):
+    try:
+        pkg_resources.require(package)
+        print(f"{package} is already installed.")
+    except pkg_resources.DistributionNotFound:
+        print(f"{package} not found. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# Import and install SyGMa
+install_package("sygma")
+
+# Import SyGMa after ensuring it's installed
+import sygma
+
 #Write out the results
 def export_for_SIRIUS(input_df_name, compound_name):
     df = pd.read_csv(input_df_name, sep='\t')
