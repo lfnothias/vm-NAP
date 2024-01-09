@@ -17,9 +17,9 @@ root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_dir)
 
 # Now you can import your custom modules
-from gnps_postprocessing.lib.gnps_download_results import *
-from gnps_postprocessing.lib.consolidate_structures import *
-from gnps_postprocessing.lib.gnps_results_postprocess import *
+from gnps_postprocessing.gnps_download_results import *
+from gnps_postprocessing.consolidate_structures import *
+from gnps_postprocessing.gnps_results_postprocess import *
 from src.prepare_virtual_metabolization import *
 from src.run_virtual_metabolization import *
 

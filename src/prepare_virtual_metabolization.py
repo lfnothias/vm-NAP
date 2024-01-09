@@ -5,9 +5,9 @@ import os
 import sys
 sys.path.append('gnps_postprocessing/lib')
 sys.path.append('src')
-from gnps_download_results import *
-from consolidate_structures import *
-from gnps_results_postprocess import *
+from gnps_postprocessing.gnps_download_results import *
+from gnps_postprocessing.consolidate_structures import *
+from gnps_postprocessing.gnps_results_postprocess import *
 
 
 def print_compound_names(list_compounds):
