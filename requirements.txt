@@ -1,9 +1,7 @@
 numpy
 pandas
 rdkit
-rdkit-pypi
 jupyter
-rdkit
 ipykernel
 ipython
 streamlit
