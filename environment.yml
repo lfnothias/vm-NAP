@@ -14,5 +14,8 @@ dependencies:
   - ipython
   - unzip
   - requests
+  - conda-forge::sygma
   - pip:
       - streamlit
+      - git+https://github.com/lfnothias/gnps_postprocessing.git@lfnothias-patch-1#egg=gnps_postprocessing
+      - git+https://github.com/3D-e-Chem/sygma@master#egg=sygma
