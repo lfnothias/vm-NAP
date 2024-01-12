@@ -3,7 +3,6 @@ import numpy as np
 import math
 from subprocess import call
 import subprocess
-import sygma
 from rdkit.Chem import SaltRemover, MolStandardize
 from molvs import Standardizer
 from rdkit import Chem
@@ -11,6 +10,7 @@ from rdkit import RDLogger
 import shutil
 import traceback
 import requests
+import pkg_resources
 
 lg = RDLogger.logger()
 lg.setLevel(RDLogger.ERROR)
