@@ -11,15 +11,22 @@ import logging
 import io
 import os
 from datetime import datetime
+import zipfile
 
 # Get the absolute path of the root directory (one level up from 'src')
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_dir)
 
 # Now you can import your custom modules
-from gnps_postprocessing import *
-from src.prepare_virtual_metabolization import *
-from src.run_virtual_metabolization import *
+from prepare_virtual_metabolization import *
+from run_virtual_metabolization import *
+
+#Installing gnps_postprocessing
+install_package("gnps_postprocessing")
+import gnps_postprocessing
+from gnps_postprocessing.gnps_download_results import *
+from gnps_postprocessing.consolidate_structures import *
+from gnps_postprocessing.gnps_results_postprocess import *
 
 class StreamToLogger:
     """
@@ -218,7 +225,6 @@ def main(args):
         run_biotransformer3(args.mode, prepare_for_virtual_metabolization.list_smiles, 
                             prepare_for_virtual_metabolization.list_compound_name,
                             args.type_of_biotransformation, args.number_of_steps, dynamic_string)
-
         display(Markdown(run_biotransformer3.markdown_link_biotransf))
         print('Results are at: '+run_biotransformer3.file_name_biotransf)
         display(Markdown(run_biotransformer3.markdown_link_biotransf_nap))
