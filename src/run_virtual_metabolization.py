@@ -181,12 +181,24 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
         print(java_version.decode())
 
         # Check if the JAR file exists, and download it if it doesn't
+        # Check if the JAR file exists, and download it if it doesn't
         if not os.path.exists('biotransformer3.zip'):
-        print(f"Downloading biotransformer3 ...")
+            print(f"Downloading biotransformer3 ...")
             url = 'https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip'
-            r = requests.get(url, allow_redirects=True)
-            open('biotransformer3.zip', 'wb').write(r.content)
-            print("Download complete.")
+        
+            try:
+                response = requests.get(url, allow_redirects=True)
+                response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
+                with open('biotransformer3.zip', 'wb') as file:
+                    file.write(response.content)
+            except requests.exceptions.HTTPError as errh:
+                print(f"HTTP Error occurred: {errh}")
+            except requests.exceptions.ConnectionError as errc:
+                print(f"Error Connecting: {errc}")
+            except requests.exceptions.Timeout as errt:
+                print(f"Timeout Error: {errt}")
+            except requests.exceptions.RequestException as err:
+                print(f"An error occurred: {err}")
         else:
             print(f"BioTransformer was already downloaded - skipping download.")
         
