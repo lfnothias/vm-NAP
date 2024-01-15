@@ -11,6 +11,7 @@ import shutil
 import traceback
 import requests
 import pkg_resources
+import zipfile
 
 lg = RDLogger.logger()
 lg.setLevel(RDLogger.ERROR)
@@ -153,10 +154,10 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
 
     print(f'Number of SyGMA candidates = {df_master.shape[0]}\nNumber of unique SyGMA candidates = {len(df_master.metabolite.unique())}\n=== SyGMa COMPLETED ===')
     
-    df_master.to_csv(str(output_name)+'_results_vm-NAP_SyGMa.tsv', sep='\t', index=False)
+    df_master.to_csv(str(output_name)+'_results_vm_NAP_SyGMa.tsv', sep='\t', index=False)
     run_sygma_batch.df_master = df_master
 
-    file_name = f"{output_name}_results_vm-NAP_SyGMa"
+    file_name = f"{output_name}_results_vm_NAP_SyGMa"
     run_sygma_batch.file_name_sygma = f"{file_name}.tsv"
 
     print('  ')
@@ -167,9 +168,9 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
     print('---- DOWNLOAD THE RESULTS BELOW ----')
     run_sygma_batch.file_name_sygma_nap = f"{file_name}_NAP.tsv"
     run_sygma_batch.file_name_sygma_sirius = f"{file_name}_SIRIUS.tsv"
-    run_sygma_batch.markdown_link_sygma = f"[View/Download the vm-NAP SyGMa results from {output_name}](./{run_sygma_batch.file_name_sygma})."
-    run_sygma_batch.markdown_link_sygma_nap = f"[View/Download the vm-NAP SyGMa results for Network Annotation Propagation from {output_name}](./{run_sygma_batch.file_name_sygma_nap})."
-    run_sygma_batch.markdown_link_sygma_sirius = f"[View/Download the vm-NAP SyGMa results for SIRIUS from {output_name}](./{run_sygma_batch.file_name_sygma_sirius})."
+    run_sygma_batch.markdown_link_sygma = f"[View/Download the vm_NAP SyGMa results from {output_name}](./{run_sygma_batch.file_name_sygma})."
+    run_sygma_batch.markdown_link_sygma_nap = f"[View/Download the vm_NAP SyGMa results for Network Annotation Propagation from {output_name}](./{run_sygma_batch.file_name_sygma_nap})."
+    run_sygma_batch.markdown_link_sygma_sirius = f"[View/Download the vm_NAP SyGMa results for SIRIUS from {output_name}](./{run_sygma_batch.file_name_sygma_sirius})."
 
 
 # Run BioTransformer3 on two lists of SMILES and compound name - 2211
@@ -334,7 +335,7 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
         print('Total number of BioTransformer candidates = '+str(df2_bio.shape[0])+' - and '+str(len(df2_bio.SMILES.unique()))+" are unique")
         #print('Total number of unique BioTransformer candidates = '+str(len(df2_bio.SMILES.unique())))
 
-        file_name = f"{output_name}_results_vm-NAP_BioTransformer"
+        file_name = f"{output_name}_results_vm_NAP_BioTransformer"
         run_biotransformer3.file_name_biotransf = f"{file_name}.tsv"
         run_biotransformer3.file_name_biotransf_nap = f"{file_name}_NAP.tsv"
         run_biotransformer3.file_name_biotransf_sirius = f"{file_name}_SIRIUS.tsv"
@@ -348,9 +349,9 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
         export_for_SIRIUS(run_biotransformer3.file_name_biotransf, 'Parent_Compound_Name')
         print('  ')
         print('##### DOWNLOAD THE RESULTS BELOW #####')
-        run_biotransformer3.markdown_link_biotransf = f"[View/Download the vm-NAP results from {output_name}](./{run_biotransformer3.file_name_biotransf})."
-        run_biotransformer3.markdown_link_biotransf_nap = f"[View/Download the vm-NAP BioTransformer results for Network Annotation Propagation from {output_name}](./{run_biotransformer3.file_name_biotransf_nap})."
-        run_biotransformer3.markdown_link_biotransf_sirius = f"[View/Download the vm-NAP BioTransformer results for SIRIUS from {output_name}](./{run_biotransformer3.file_name_biotransf_sirius})."
+        run_biotransformer3.markdown_link_biotransf = f"[View/Download the vm_NAP results from {output_name}](./{run_biotransformer3.file_name_biotransf})."
+        run_biotransformer3.markdown_link_biotransf_nap = f"[View/Download the vm_NAP BioTransformer results for Network Annotation Propagation from {output_name}](./{run_biotransformer3.file_name_biotransf_nap})."
+        run_biotransformer3.markdown_link_biotransf_sirius = f"[View/Download the vm_NAP BioTransformer results for SIRIUS from {output_name}](./{run_biotransformer3.file_name_biotransf_sirius})."
 
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e.output.decode()}")

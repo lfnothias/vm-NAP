@@ -3,11 +3,8 @@ import numpy as np
 import math
 import os
 import sys
-sys.path.append('gnps_postprocessing/lib')
-sys.path.append('src')
-from gnps_postprocessing import *
-
-
+from vm_NAP_processing import *
+from run_virtual_metabolization import *
 
 def print_compound_names(list_compounds):
     for item in sorted(list_compounds):

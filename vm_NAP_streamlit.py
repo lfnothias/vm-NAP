@@ -11,17 +11,16 @@ import shutil
 from datetime import datetime
 
 
-
 # Custom CSS to change the background color of text boxes
 st.set_page_config(
-    page_title="vm-NAP Processing Web-app",
+    page_title="vm_NAP Processing Web-app",
     layout="wide",  # Use 'wide' for a full-width layout
 )
 
 # Large Title and Introductory Sentence
 st.markdown("""
-    <h1 style='text-align: center; color: black;'>vm-NAP Processing Web-app</h1>
-    <p style='text-align: center;'>Welcome to the vm-NAP Processing Web Application. This tool integrates molecular networking, virtual metabolism, and annotation propagation for xenobiotic metabolites.</p>
+    <h1 style='text-align: center; color: black;'>vm_NAP Processing Web-app</h1>
+    <p style='text-align: center;'>Welcome to the vm_NAP Processing Web Application. This tool integrates molecular networking, virtual metabolism, and annotation propagation for xenobiotic metabolites.</p>
     <div style="text-align: center;">
         <a href="https://link_to_documentation">Read the Documentation</a> |
         <a href="https://link_to_preprint">Read and Cite the Preprint</a> |
@@ -96,12 +95,12 @@ with column3:
     debug_mode = st.checkbox("**Debug Mode for Quick Testing** (untick for full computation)", True)
     max_compounds_debug = st.number_input("Max Compounds in Debug Mode", 3, format="%d")
 
-    run_button = st.button("Run vm-NAP Processing")
+    run_button = st.button("Run vm_NAP Processing")
     
     
 if run_button != "None":
-    # Construct the command to run vm-NAP_processing.py
-    command = ["python", "src/vm-NAP_processing.py"]
+    # Construct the command to run vm_NAP_processing.py
+    command = ["python", "src/vm_NAP_processing.py"]
     
     if  job_id.lower() != 'false':
         # Add arguments based on the user's input
@@ -196,14 +195,14 @@ if run_button != "None":
     # Create the suffix
     suffix = create_suffix(job_id, sirius_file, extra_compounds_file)
 
-    # Rename vm-nap_log.txt
-    log_file_original = 'vm-nap_log.txt'
-    log_file_renamed = f'vm-nap_log_{suffix}.txt'
+    # Rename vm_nap_log.txt
+    log_file_original = 'vm_nap_log.txt'
+    log_file_renamed = f'vm_nap_log_{suffix}.txt'
     if os.path.exists(log_file_original):
         os.rename(log_file_original, log_file_renamed)
 
     # Create a ZIP archive of the files
-    zip_file_name = f"vm-NAP_results_{suffix}.zip"
+    zip_file_name = f"vm_NAP_results_{suffix}.zip"
     zip_buffer = BytesIO()
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
         for file_path in file_paths:
@@ -246,7 +245,7 @@ if run_button != "None":
 
         # Check the return code to determine success or failure
         if process.returncode == 0:
-            st.success("vm-NAP Processing completed successfully.")
+            st.success("vm_NAP Processing completed successfully.")
 
             # Create a ZIP archive of the files
             zip_buffer = BytesIO()
@@ -268,4 +267,4 @@ if run_button != "None":
                 mime="application/zip"
             )
         else:
-            st.error("An error occurred during vm-NAP Processing.")
+            st.error("An error occurred during vm_NAP Processing.")
