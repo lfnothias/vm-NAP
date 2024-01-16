@@ -87,7 +87,6 @@ def export_for_NAP(input_df_name, compound_name):
 
 # Run SyGMa on two lists of SMILES and compound name in batch
 def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name, compound_name):
-
     
     #Define the batch_size based on number of phase
     batch_size = int(100/(math.exp(phase_1_cycle))/(math.exp(phase_2_cycle)))
@@ -182,7 +181,6 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
         print(java_version.decode())
 
         # Check if the JAR file exists, and download it if it doesn't
-        # Check if the JAR file exists, and download it if it doesn't
         if not os.path.exists('biotransformer3.zip'):
             print(f"Downloading biotransformer3 ...")
             url = 'https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip'
@@ -225,20 +223,19 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
                     os.rename(readme_path, new_readme_path)
                     print("Renamed README.md to README_BioTransformer.md")
 
-                for filename in os.listdir(source_dir):
-                    source_file = os.path.join(source_dir, filename)
-                    dest_file = os.path.join(dest_dir, filename)
-                    shutil.move(source_file, dest_file)
-            else:
-                print(f"Directory {source_dir} does not exist.")
+                    for filename in os.listdir(source_dir):
+                        source_file = os.path.join(source_dir, filename)
+                        dest_file = os.path.join(dest_dir, filename)
+                        shutil.move(source_file, dest_file)
+                else:
+                    print(f"Directory {source_dir} does not exist.")
 
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
 
-    except Exception as e:
-        print(f"Error checking Java version or downloading BioTransformer: {e}")
+    #except Exception as e:
+    #    print(f"Error checking Java version or downloading BioTransformer: {e}")
 
-            
         # Prepare pandas tables
         df_bio = pd.DataFrame(data=None)
         print('######  Running BioTransformer takes approximatively 3-60 secs per compound depending on biotransformation parameters')
@@ -257,7 +254,6 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
         elif type_of_biotransformation in list_of_biotransformation:
             print('     Biotransformation: '+type_of_biotransformation)
             print('     Please wait for the computation ...')
-
 
         output_folder = "biotransformer_results"
 

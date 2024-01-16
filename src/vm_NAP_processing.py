@@ -21,13 +21,6 @@ sys.path.append(root_dir)
 from prepare_virtual_metabolization import *
 from run_virtual_metabolization import *
 
-#Installing gnps_postprocessing
-install_package("gnps_postprocessing")
-import gnps_postprocessing
-from gnps_postprocessing.gnps_download_results import *
-from gnps_postprocessing.consolidate_structures import *
-from gnps_postprocessing.gnps_results_postprocess import *
-
 class StreamToLogger:
     """
     Custom stream object that redirects writes to a logger instance.
