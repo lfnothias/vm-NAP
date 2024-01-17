@@ -27,10 +27,15 @@ Install locally in conda with:
 
 #### vm-NAP web-app locally
 
-> Start the streamlit app:
+> Start the streamlit app with:
 
 ```
-streamlit run vm-NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
+streamlit run vm_NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
+```
+> or
+
+```
+streamlit run vm_NAP_streamlit.py --server.port 8501 --server.address localhost
 ```
 
 #### vm-NAP commandline:
