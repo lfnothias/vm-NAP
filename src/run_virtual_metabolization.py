@@ -171,185 +171,205 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
     run_sygma_batch.markdown_link_sygma_nap = f"[View/Download the vm_NAP SyGMa results for Network Annotation Propagation from {output_name}](./{run_sygma_batch.file_name_sygma_nap})."
     run_sygma_batch.markdown_link_sygma_sirius = f"[View/Download the vm_NAP SyGMa results for SIRIUS from {output_name}](./{run_sygma_batch.file_name_sygma_sirius})."
 
+#Defining a function to check the Java version
+def check_java_version():
+    """Check and print the installed Java version."""
+    try:
+        java_version = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT)
+        print(java_version.decode())
+        print("Java version check completed.")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while checking Java version: {e.output.decode()}")
+    except Exception as e:
+        print(f"An unexpected error occurred while checking Java version: {e}")
+
+#Defining a function to download and unzip Biotransformer
+def download_and_unzip_biotransformer():
+    """Download and unzip the BioTransformer software if not already present."""
+
+    if not os.path.exists('biotransformer3.zip'):
+        print("Downloading biotransformer3 ...")
+        url = 'https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip'
+        try:
+            response = requests.get(url, allow_redirects=True)
+            response.raise_for_status()
+            with open('biotransformer3.zip', 'wb') as file:
+                file.write(response.content)
+        except requests.RequestException as e:
+            print(f"An error occurred while downloading BioTransformer: {e}")
+            return
+        print("BioTransformer downloaded.")
+    else:
+        print("BioTransformer was already downloaded - skipping download.")
+
+    if not os.path.exists('BioTransformer3.0_20230525.jar'):
+        try:
+            with zipfile.ZipFile('biotransformer3.zip', 'r') as zip_ref:
+                zip_ref.extractall('.')
+            print("BioTransformer is unzipped.")
+        except Exception as e:
+            print(f"An error occurred while unzipping BioTransformer: {e}")
+    else:
+        print("BioTransformer is already unzipped - skipping unzip.")
+
+#Prepare the execution environment for biotransformer3 by creating or cleaning the output folder
+def prepare_environment_bio3(source_dir, dest_dir):
+    """Prepare the working environment for biotransformer3 by moving files and cleaning up directories."""
+    if os.path.exists(source_dir):
+        readme_path = os.path.join(source_dir, "README.md")
+        new_readme_path = os.path.join(source_dir, "README_BioTransformer.md")
+        if os.path.exists(readme_path):
+            os.rename(readme_path, new_readme_path)
+            print("Renamed README.md to README_BioTransformer.md")
+            for filename in os.listdir(source_dir):
+                source_file = os.path.join(source_dir, filename)
+                dest_file = os.path.join(dest_dir, filename)
+                shutil.move(source_file, dest_file)
+    else:
+        print(f"Directory {source_dir} does not exist.")
+
+#Defining a function to check if the biotransformation type is valid
+def validate_biotransformation_type(type_of_biotransformation):
+    list_of_biotransformation = ['ecbased', 'cyp450', 'phaseII', 'hgut', 'superbio', 'allHuman', 'envimicro']
+    if type_of_biotransformation in list_of_biotransformation:
+        print('     Biotransformation: '+type_of_biotransformation)
+        return True
+    else:
+        print('Check the type/spelling of the biotransformation!')
+        return False
+
+#Defining a function to create or clear the output folder        
+def create_or_clear_output_folder(folder_path):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    else:
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
 
 # Run BioTransformer3 on two lists of SMILES and compound name - 2211
 def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransformation, number_of_steps, output_name):
-    
-    try:
-        # Check Java version
-        java_version = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT)
-        print(java_version.decode())
+    """Run BioTransformer3 on SMILES string"""
 
-        # Check if the JAR file exists, and download it if it doesn't
-        if not os.path.exists('biotransformer3.zip'):
-            print(f"Downloading biotransformer3 ...")
-            url = 'https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip'
-        
-            try:
-                response = requests.get(url, allow_redirects=True)
-                response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
-                with open('biotransformer3.zip', 'wb') as file:
-                    file.write(response.content)
-            except requests.exceptions.HTTPError as errh:
-                print(f"HTTP Error occurred: {errh}")
-            except requests.exceptions.ConnectionError as errc:
-                print(f"Error Connecting: {errc}")
-            except requests.exceptions.Timeout as errt:
-                print(f"Timeout Error: {errt}")
-            except requests.exceptions.RequestException as err:
-                print(f"An error occurred: {err}")
-        else:
-            print(f"BioTransformer was already downloaded - skipping download.")
-        
-        try:
-            if not os.path.exists('BioTransformer3.0_20230525.jar'):
-                # Unzip the file using zipfile
-                with zipfile.ZipFile('biotransformer3.zip', 'r') as zip_ref:
-                    zip_ref.extractall('.')
-                print("BioTransformer is unzipped.")
-            else:
-                print(f"BioTransformer is already unzipped - skipping unzip.")
-
-            print(" ")
-            source_dir = 'wishartlab-biotransformer3.0jar-6432cf887ed7'
-            dest_dir = '.'
-            # Check if the source directory exists
-            if os.path.exists(source_dir):
-                # Move each file in the source directory to the destination directory
-                # Rename README.md to README_BioTransformer.md
-                readme_path = os.path.join(source_dir, "README.md")
-                new_readme_path = os.path.join(source_dir, "README_BioTransformer.md")
-                if os.path.exists(readme_path):
-                    os.rename(readme_path, new_readme_path)
-                    print("Renamed README.md to README_BioTransformer.md")
-
-                    for filename in os.listdir(source_dir):
-                        source_file = os.path.join(source_dir, filename)
-                        dest_file = os.path.join(dest_dir, filename)
-                        shutil.move(source_file, dest_file)
-                else:
-                    print(f"Directory {source_dir} does not exist.")
-
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-
-    #except Exception as e:
-    #    print(f"Error checking Java version or downloading BioTransformer: {e}")
-
-        # Prepare pandas tables
-        df_bio = pd.DataFrame(data=None)
-        print('######  Running BioTransformer takes approximatively 3-60 secs per compound depending on biotransformation parameters')
-        print('     Number of compounds being virtually metabolized with BioTransformer =  '+str(len(list_smiles)))
-        
-        col_list = ['InChIKey',	'SMILES','PUBCHEM_CID','Molecular formula','Major Isotope Mass',
+    output_folder = "biotransformer_results"
+    col_list = ['InChIKey',	'SMILES','PUBCHEM_CID','Molecular formula','Major Isotope Mass',
                     'Metabolite ID','cdk:Title','Reaction','Reaction ID', 'Enzyme(s)','Biosystem','Precursor SMILES',
                     'Precursor Major Isotope Mass']
 
-
-        list_of_biotransformation = ['ecbased','cyp450','phaseII','hgut','superbio','allHuman','envimicro']
-        
-        if type_of_biotransformation not in list_of_biotransformation:
-            print('Check the type/spelling of the biotransformation !!!')
-            return None
-        elif type_of_biotransformation in list_of_biotransformation:
-            print('     Biotransformation: '+type_of_biotransformation)
-            print('     Please wait for the computation ...')
-
-        output_folder = "biotransformer_results"
-
-        # Create the output folder if it doesn't exist
-        if not os.path.exists(output_folder):
-            os.makedirs(output_folder)
-        else:
-            # If the folder exists, clear its contents
-            for filename in os.listdir(output_folder):
-                file_path = os.path.join(output_folder, filename)
-                try:
-                    if os.path.isfile(file_path) or os.path.islink(file_path):
-                        os.unlink(file_path)
-                    elif os.path.isdir(file_path):
-                        shutil.rmtree(file_path)
-                except Exception as e:
-                    print(f'Failed to delete {file_path}. Reason: {e}')
-
-        counter = 0
-            
-        # Iterative into the lists and run BioTransformer
-        for a, b in zip(list_smiles, list_compound_name):
-            
-            counter +=1
-            output_filename = f"{output_folder}/biotransformer_output_{counter}.csv"
-
-            try:
-                os.remove("biotransformer_temp_output.csv")
-            except FileNotFoundError:
-                pass  # File does not exist, no need to remove
-            
-            try:
-                if mode == 'standard' or 'btType':
-                    biotransformcall = 'java -jar BioTransformer3.0_20230525.jar -k pred -b ' + type_of_biotransformation +' -ismi "' + a +'" -ocsv '+str(output_filename)+' -s '+str(number_of_steps)
-                elif mode.str.startswith('-k'):
-                    biotransformcall = 'java -jar BioTransformer3.0_20230525.jar -ismi "' + a +'" -ocsv '+str(output_filename)+' '+mode
-
-                #print(biotransformcall)
-                print('RUNNING VIRTUAL METABOLISATION WITH BIOTRANSFORMER')
-                biotransformcall = biotransformcall.split() # because call takes a list of strings 
-                call(biotransformcall)
-
-                try:
-                    # Check if the output file exists and is not empty
-                    if os.path.exists(output_filename) and os.path.getsize(output_filename) > 0:
-                        df_bio = pd.read_csv(output_filename, sep=',', usecols=col_list)
-                        df_bio['Parent_Compound_Name'] = b
-                        #df_bio['Biotransformed_Compound_Name'] = str(df_bio['Reaction'][:25]) + str(df_bio['Parent_Compound_Name'])
-                        df_bio.to_csv(output_filename, sep='\t', index=False)
-                    else:
-                        print(f"No output for compound {b}")
-
-                except Exception as e:
-                    print(f"Error with BioTransformer for compound {b}: {e}")
-
-            except:
-                print('          ! No candidate or error with BioTransformer for compound n'+str(counter)+' - it will be ignored')
-                print('                    '+b)
-                print('                    For:  '+a+' . Check the SMILES on http://biotransformer.ca and/or the GNPS library entry.')
-                pass
-
-        #Create a consensus name
-        dataframes = []
-        for i in range(1, counter + 1):
-            temp_output_filename = f"{output_folder}/biotransformer_output_{i}.csv"
-            if os.path.exists(temp_output_filename):
-                temp_df = pd.read_csv(temp_output_filename, sep='\t')
-                dataframes.append(temp_df)
-
-        # Concatenate all DataFrames in the list
-        df2_bio = pd.concat(dataframes, ignore_index=True)
-
-        print(' - ')
-        print('####### VIRTUAL METABOLISATION COMPLETED FOR ALL COMPOUNDS #######')
-        print('Total number of BioTransformer candidates = '+str(df2_bio.shape[0])+' - and '+str(len(df2_bio.SMILES.unique()))+" are unique")
-        #print('Total number of unique BioTransformer candidates = '+str(len(df2_bio.SMILES.unique())))
-
-        file_name = f"{output_name}_results_vm_NAP_BioTransformer"
-        run_biotransformer3.file_name_biotransf = f"{file_name}.tsv"
-        run_biotransformer3.file_name_biotransf_nap = f"{file_name}_NAP.tsv"
-        run_biotransformer3.file_name_biotransf_sirius = f"{file_name}_SIRIUS.tsv"
-
-        df2_bio.to_csv(run_biotransformer3.file_name_biotransf, sep='\t', index = False)
-    
-        print('  ')
-        print('  ')
-        export_for_NAP(run_biotransformer3.file_name_biotransf, 'Parent_Compound_Name')
-        print('  ')
-        export_for_SIRIUS(run_biotransformer3.file_name_biotransf, 'Parent_Compound_Name')
-        print('  ')
-        print('##### DOWNLOAD THE RESULTS BELOW #####')
-        run_biotransformer3.markdown_link_biotransf = f"[View/Download the vm_NAP results from {output_name}](./{run_biotransformer3.file_name_biotransf})."
-        run_biotransformer3.markdown_link_biotransf_nap = f"[View/Download the vm_NAP BioTransformer results for Network Annotation Propagation from {output_name}](./{run_biotransformer3.file_name_biotransf_nap})."
-        run_biotransformer3.markdown_link_biotransf_sirius = f"[View/Download the vm_NAP BioTransformer results for SIRIUS from {output_name}](./{run_biotransformer3.file_name_biotransf_sirius})."
-
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e.output.decode()}")
+    # Check Java version
+    try:
+        check_java_version()
+        print("Java version check completed.", flush=True)
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print(f"Error checking Java version: {e}", flush=True)
+
+    # Download and unzip BioTransformer
+    try:
+        download_and_unzip_biotransformer()
+        print("BioTransformer download and unzip completed.", flush=True)
+    except Exception as e:
+        print(f"Error downloading and unzipping BioTransformer: {e}", flush=True)
+
+    # Prepare the working environment
+    try:
+        prepare_environment_bio3('wishartlab-biotransformer3.0jar-6432cf887ed7', '.', flush=True)
+        print("BioTransformer environment preparation completed.")
+    except Exception as e:
+        print(f"Error preparing the working environment: {e}", flush=True)
+
+    # Validate the biotransformation type
+    try:
+        validate_biotransformation_type(type_of_biotransformation)
+        print("Biotransformation type validation completed.", flush=True)
+    except Exception as e:
+        print(f"Error validating biotransformation type: {e}", flush=True)
+
+    # Create the output folder if it doesn't exist, clear if it does
+    try:
+        create_or_clear_output_folder(output_folder)
+        print("Output folder creation/clearing completed.", flush=True)
+    except Exception as e:
+        print(f"Error creating or clearing the output folder: {e}", flush=True)
+
+    try:    
+        os.remove("biotransformer_temp_output.csv")
+    except FileNotFoundError:
+        pass
+
+    print('######  Parameters checking for Biotransformer3 completed. Now starting the computation...')
+    print('######  Running BioTransformer takes approximatively 3-60 secs per compound depending on biotransformation parameters')
+    print('     Number of compounds being virtually metabolized with BioTransformer =  '+str(len(list_smiles)))
+
+    counter = 0
+    for a, b in zip(list_smiles, list_compound_name):
+            
+        counter +=1
+        output_filename = f"{output_folder}/biotransformer_output_{counter}.csv"
+            
+        try:
+            if mode == 'standard' or mode == 'btType':
+                biotransformcall = 'java -jar BioTransformer3.0_20230525.jar -k pred -b ' + type_of_biotransformation +' -ismi "' + a +'" -ocsv '+str(output_filename)+' -s '+str(number_of_steps)
+            elif mode.str.startswith('-k'):
+                biotransformcall = 'java -jar BioTransformer3.0_20230525.jar -ismi "' + a +'" -ocsv '+str(output_filename)+' '+mode
+
+            print('RUNNING VIRTUAL METABOLISATION WITH BIOTRANSFORMER...')
+            biotransformcall = biotransformcall.split() # because call takes a list of strings 
+            call(biotransformcall)
+
+            try:
+                # Check if the output file exists and is not empty
+                if os.path.exists(output_filename) and os.path.getsize(output_filename) > 0:
+                    df_bio = pd.read_csv(output_filename, sep=',', usecols=col_list)
+                    df_bio['Parent_Compound_Name'] = b
+                    #df_bio['Biotransformed_Compound_Name'] = str(df_bio['Reaction'][:25]) + str(df_bio['Parent_Compound_Name'])
+                    df_bio.to_csv(output_filename, sep='\t', index=False)
+                else:
+                    print(f"No output for compound {b}")
+
+            except Exception as e:
+                print(f"Error with BioTransformer for compound {b}: {e}")
+
+        except:
+            print('          ! No candidate or error with BioTransformer for compound n'+str(counter)+' - it will be ignored')
+            print('          '+b)
+            print('          For:  '+a+' . Check the SMILES on http://biotransformer.ca and/or the GNPS library entry.')
+            pass
+    
+    dataframes = []
+    for i in range(1, counter + 1):
+        temp_output_filename = f"{output_folder}/biotransformer_output_{i}.csv"
+        if os.path.exists(temp_output_filename):
+            temp_df = pd.read_csv(temp_output_filename, sep='\t')
+            dataframes.append(temp_df)
+
+    # Concatenate all DataFrames in the list
+    df2_bio = pd.concat(dataframes, ignore_index=True)
+
+    print(' - ')
+    print('####### VIRTUAL METABOLISATION COMPLETED FOR ALL COMPOUNDS #######')
+    print('Total number of BioTransformer candidates = '+str(df2_bio.shape[0])+' - and '+str(len(df2_bio.SMILES.unique()))+" are unique")
+    #print('Total number of unique BioTransformer candidates = '+str(len(df2_bio.SMILES.unique())))
+
+    file_name = f"{output_name}_results_vm_NAP_BioTransformer"
+    run_biotransformer3.file_name_biotransf = f"{file_name}.tsv"
+    run_biotransformer3.file_name_biotransf_nap = f"{file_name}_NAP.tsv"
+    run_biotransformer3.file_name_biotransf_sirius = f"{file_name}_SIRIUS.tsv"
+
+    df2_bio.to_csv(run_biotransformer3.file_name_biotransf, sep='\t', index = False)
+    
+    print('  ')
+    print('  ')
+    export_for_NAP(run_biotransformer3.file_name_biotransf, 'Parent_Compound_Name')
+    print('  ')
+    export_for_SIRIUS(run_biotransformer3.file_name_biotransf, 'Parent_Compound_Name')
+    print('  ')
+    print('##### DOWNLOAD THE RESULTS BELOW #####')
+    run_biotransformer3.markdown_link_biotransf = f"[View/Download the vm_NAP results from {output_name}](./{run_biotransformer3.file_name_biotransf})."
+    run_biotransformer3.markdown_link_biotransf_nap = f"[View/Download the vm_NAP BioTransformer results for Network Annotation Propagation from {output_name}](./{run_biotransformer3.file_name_biotransf_nap})."
+    run_biotransformer3.markdown_link_biotransf_sirius = f"[View/Download the vm_NAP BioTransformer results for SIRIUS from {output_name}](./{run_biotransformer3.file_name_biotransf_sirius})."
