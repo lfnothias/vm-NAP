@@ -212,16 +212,33 @@ def main(args):
 
     # Optional: Run BioTransformation
     if args.run_biotransformer:
+        preparation = False
+        print( '')
+        print( '')
+        print( '### PREPARING THE SETUP FOR BioTransformer3 - PLEASE WAIT (slow)...')
+
+        try:
+            with CaptureOutput() as captured_prep:
+                prepare_for_bio3(args.type_of_biotransformation, prepare_for_virtual_metabolization.list_smiles)
+            filtered_output_prep = captured_prep.get_filtered_output()
+            print(filtered_output_prep)
+            preparation = True
+        except Exception as e:
+            print("Error while running prepare_for_bio3: {}".format(e))
+        
         print( '')
         print( '')
         print( '### RUNNING BioTransformer3 - PLEASE WAIT (slow)...')
-        with CaptureOutput() as captured:
-            run_biotransformer3(args.mode, prepare_for_virtual_metabolization.list_smiles, 
-                                prepare_for_virtual_metabolization.list_compound_name,
-                                args.type_of_biotransformation, args.number_of_steps, dynamic_string)
-        filtered_output = captured.get_filtered_output()
-        print(filtered_output)
-
+        if preparation == True:
+            with CaptureOutput() as captured:
+                run_biotransformer3(args.mode, prepare_for_virtual_metabolization.list_smiles, 
+                                    prepare_for_virtual_metabolization.list_compound_name,
+                                    args.type_of_biotransformation, args.number_of_steps, dynamic_string)
+            filtered_output = captured.get_filtered_output()
+            print(filtered_output)
+        else:
+            print("Biotransformer3 was not run due to an error in the preparation step.")
+       
         display(Markdown(run_biotransformer3.markdown_link_biotransf))
         print('Results are at: '+run_biotransformer3.file_name_biotransf)
         display(Markdown(run_biotransformer3.markdown_link_biotransf_nap))

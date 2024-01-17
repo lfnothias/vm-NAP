@@ -184,7 +184,7 @@ def check_java_version():
         print(f"An unexpected error occurred while checking Java version: {e}")
 
 #Defining a function to download and unzip Biotransformer
-def download_and_unzip_biotransformer():
+def old_download_and_unzip_biotransformer():
     """Download and unzip the BioTransformer software if not already present."""
 
     if not os.path.exists('biotransformer3.zip'):
@@ -212,8 +212,42 @@ def download_and_unzip_biotransformer():
     else:
         print("BioTransformer is already unzipped - skipping unzip.")
 
+def download_and_unzip_biotransformer():
+    """Download and unzip the BioTransformer software if not already present."""
+
+    url = 'https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip'
+    local_zip_file = 'biotransformer3.zip'
+    local_jar_file = 'BioTransformer3.0_20230525.jar'
+
+    if not os.path.exists(local_zip_file):
+        print(f"Downloading {local_zip_file} from {url}...")
+        try:
+            response = requests.get(url, allow_redirects=True)
+            if response.status_code == 200:
+                with open(local_zip_file, 'wb') as file:
+                    file.write(response.content)
+                print(f"Downloaded {local_zip_file}.")
+            else:
+                print(f"Failed to download. Status code: {response.status_code}")
+        except requests.RequestException as e:
+            print(f"An error occurred while downloading BioTransformer: {e}")
+            return
+    else:
+        print(f"{local_zip_file} was already downloaded - skipping download.")
+
+    if not os.path.exists(local_jar_file):
+        print(f"Unzipping {local_zip_file}.")
+        try:
+            with zipfile.ZipFile(local_zip_file, 'r') as zip_ref:
+                zip_ref.extractall('.')
+            print(f"{local_zip_file} is unzipped.")
+        except Exception as e:
+            print(f"An error occurred while unzipping BioTransformer: {e}")
+    else:
+        print(f"{local_jar_file} is already unzipped - skipping unzip.")
+
 #Prepare the execution environment for biotransformer3 by creating or cleaning the output folder
-def prepare_environment_bio3(source_dir, dest_dir):
+def prepare_environment(source_dir, dest_dir):
     """Prepare the working environment for biotransformer3 by moving files and cleaning up directories."""
     if os.path.exists(source_dir):
         readme_path = os.path.join(source_dir, "README.md")
@@ -253,49 +287,45 @@ def create_or_clear_output_folder(folder_path):
             except Exception as e:
                 print(f'Failed to delete {file_path}. Reason: {e}')
 
-# Run BioTransformer3 on two lists of SMILES and compound name - 2211
-def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransformation, number_of_steps, output_name):
-    """Run BioTransformer3 on SMILES string"""
+def prepare_for_bio3(type_of_biotransformation, list_smiles):
+    """Prepare the working environment for biotransformer3 by checking Java, Downloading and unziping BioTransformer3, prepare the folder, validate the biotransformation type, creating necessary files and cleaning up directories."""
 
     output_folder = "biotransformer_results"
-    col_list = ['InChIKey',	'SMILES','PUBCHEM_CID','Molecular formula','Major Isotope Mass',
-                    'Metabolite ID','cdk:Title','Reaction','Reaction ID', 'Enzyme(s)','Biosystem','Precursor SMILES',
-                    'Precursor Major Isotope Mass']
 
     # Check Java version
     try:
         check_java_version()
-        print("Java version check completed.", flush=True)
+        print("Java version check completed.")
     except Exception as e:
-        print(f"Error checking Java version: {e}", flush=True)
+        print(f"Error checking Java version: {e}")
 
     # Download and unzip BioTransformer
     try:
         download_and_unzip_biotransformer()
-        print("BioTransformer download and unzip completed.", flush=True)
+        print("BioTransformer download and unzip completed.")
     except Exception as e:
-        print(f"Error downloading and unzipping BioTransformer: {e}", flush=True)
+        print(f"Error downloading and unzipping BioTransformer: {e}")
 
     # Prepare the working environment
     try:
-        prepare_environment_bio3('wishartlab-biotransformer3.0jar-6432cf887ed7', '.', flush=True)
+        prepare_environment('wishartlab-biotransformer3.0jar-6432cf887ed7', '.',)
         print("BioTransformer environment preparation completed.")
     except Exception as e:
-        print(f"Error preparing the working environment: {e}", flush=True)
+        print(f"Error preparing the working environment: {e}")
 
     # Validate the biotransformation type
     try:
         validate_biotransformation_type(type_of_biotransformation)
-        print("Biotransformation type validation completed.", flush=True)
+        print("Biotransformation type validation completed.")
     except Exception as e:
-        print(f"Error validating biotransformation type: {e}", flush=True)
+        print(f"Error validating biotransformation type: {e}")
 
     # Create the output folder if it doesn't exist, clear if it does
     try:
         create_or_clear_output_folder(output_folder)
-        print("Output folder creation/clearing completed.", flush=True)
+        print("Output folder creation/clearing completed.")
     except Exception as e:
-        print(f"Error creating or clearing the output folder: {e}", flush=True)
+        print(f"Error creating or clearing the output folder: {e}")
 
     try:    
         os.remove("biotransformer_temp_output.csv")
@@ -305,6 +335,19 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
     print('######  Parameters checking for Biotransformer3 completed. Now starting the computation...')
     print('######  Running BioTransformer takes approximatively 3-60 secs per compound depending on biotransformation parameters')
     print('     Number of compounds being virtually metabolized with BioTransformer =  '+str(len(list_smiles)))
+
+# Run BioTransformer3 on two lists of SMILES and compound name - 2211
+def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransformation, number_of_steps, output_name):
+    """Run BioTransformer3 on SMILES string"""
+
+    output_folder = "biotransformer_results"
+    col_list = ['InChIKey',	'SMILES','PUBCHEM_CID','Molecular formula','Major Isotope Mass',
+                    'Metabolite ID','cdk:Title','Reaction','Reaction ID', 'Enzyme(s)','Biosystem','Precursor SMILES',
+                    'Precursor Major Isotope Mass']
+    
+    if not os.path.exists('BioTransformer3.0_20230525.jar'):
+        print("Error: BioTransformer3.0_20230525.jar not found. Please run prepare_for_bio3 first.")
+        return
 
     counter = 0
     for a, b in zip(list_smiles, list_compound_name):
@@ -318,7 +361,6 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
             elif mode.str.startswith('-k'):
                 biotransformcall = 'java -jar BioTransformer3.0_20230525.jar -ismi "' + a +'" -ocsv '+str(output_filename)+' '+mode
 
-            print('RUNNING VIRTUAL METABOLISATION WITH BIOTRANSFORMER...')
             biotransformcall = biotransformcall.split() # because call takes a list of strings 
             call(biotransformcall)
 
