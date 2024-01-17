@@ -12,9 +12,8 @@ dependencies:
   - openjdk
   - pip
   - ipython
-  - unzip
   - requests
-  - conda-forge::sygma
+  - rdkit
   - pip:
       - streamlit
       - git+https://github.com/lfnothias/gnps_postprocessing.git@lfnothias-patch-1#egg=gnps_postprocessing
