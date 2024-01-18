@@ -3,11 +3,24 @@ import numpy as np
 import math
 import os
 import sys
-sys.path.append('gnps_postprocessing/lib')
-sys.path.append('src')
-from gnps_postprocessing import *
+import pkg_resources
+import subprocess
 
+# Function to check and install packages
+def install_package(package):
+    try:
+        pkg_resources.require(package)
+        print(f"{package} is already installed.")
+    except pkg_resources.DistributionNotFound:
+        print(f"{package} not found. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
+#Installing gnps_postprocessing
+install_package("gnps_postprocessing")
+import gnps_postprocessing
+from gnps_postprocessing.gnps_download_results import *
+from gnps_postprocessing.consolidate_structures import *
+from gnps_postprocessing.gnps_results_postprocess import *
 
 def print_compound_names(list_compounds):
     for item in sorted(list_compounds):

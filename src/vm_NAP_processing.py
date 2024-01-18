@@ -21,13 +21,6 @@ sys.path.append(root_dir)
 from prepare_virtual_metabolization import *
 from run_virtual_metabolization import *
 
-#Installing gnps_postprocessing
-install_package("gnps_postprocessing")
-import gnps_postprocessing
-from gnps_postprocessing.gnps_download_results import *
-from gnps_postprocessing.consolidate_structures import *
-from gnps_postprocessing.gnps_results_postprocess import *
-
 class StreamToLogger:
     """
     Custom stream object that redirects writes to a logger instance.
@@ -76,7 +69,7 @@ class CaptureOutput:
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',
-                    filename='vm-nap_log.txt', filemode='w')
+                    filename='vm_nap_log.txt', filemode='w')
 logging.getLogger('sygma').setLevel(logging.WARNING)  # Adjust the logger name if different
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
@@ -89,10 +82,10 @@ sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
 
 def main(args):
     """
-    Main function to execute the vm-NAP processing workflow.
+    Main function to execute the vm_NAP processing workflow.
     """
     print( '')
-    print( '## STARTING vm-NAP ')
+    print( '## STARTING vm_NAP ')
     logging.info("Script started with arguments: %s", args)
     print( '')
 
@@ -219,12 +212,33 @@ def main(args):
 
     # Optional: Run BioTransformation
     if args.run_biotransformer:
+        preparation = False
+        print( '')
+        print( '')
+        print( '### PREPARING THE SETUP FOR BioTransformer3 - PLEASE WAIT (slow)...')
+
+        try:
+            with CaptureOutput() as captured_prep:
+                prepare_for_bio3(args.type_of_biotransformation, prepare_for_virtual_metabolization.list_smiles)
+            filtered_output_prep = captured_prep.get_filtered_output()
+            print(filtered_output_prep)
+            preparation = True
+        except Exception as e:
+            print("Error while running prepare_for_bio3: {}".format(e))
+        
         print( '')
         print( '')
         print( '### RUNNING BioTransformer3 - PLEASE WAIT (slow)...')
-        run_biotransformer3(args.mode, prepare_for_virtual_metabolization.list_smiles, 
-                            prepare_for_virtual_metabolization.list_compound_name,
-                            args.type_of_biotransformation, args.number_of_steps, dynamic_string)
+        if preparation == True:
+            with CaptureOutput() as captured:
+                run_biotransformer3(args.mode, prepare_for_virtual_metabolization.list_smiles, 
+                                    prepare_for_virtual_metabolization.list_compound_name,
+                                    args.type_of_biotransformation, args.number_of_steps, dynamic_string)
+            filtered_output = captured.get_filtered_output()
+            print(filtered_output)
+        else:
+            print("Biotransformer3 was not run due to an error in the preparation step.")
+       
         display(Markdown(run_biotransformer3.markdown_link_biotransf))
         print('Results are at: '+run_biotransformer3.file_name_biotransf)
         display(Markdown(run_biotransformer3.markdown_link_biotransf_nap))
@@ -233,7 +247,7 @@ def main(args):
         print('Results are at: '+run_biotransformer3.file_name_biotransf_sirius)
 
     print( '')
-    logging.info("#### vm-NAP script finished successfully !")
+    logging.info("#### vm_NAP script finished successfully !")
     logging.info("## Download the results with the button below and proceed with NAP and/or SIRIUS ")
     
 
@@ -266,7 +280,6 @@ def positive_int_limited(value):
     except ValueError:
         raise argparse.ArgumentTypeError("Invalid integer value")
 
-
 # Wrapper function to decide which main function to call
 def run_main():
 
@@ -279,20 +292,20 @@ def run_main():
     else:
         # Running in command-line
         parser = argparse.ArgumentParser(
-        description="vm-NAP processing: A tool for integrating molecular networking, virtual metabolism, and annotation propagation for xenobiotic metabolites.",
+        description="vm_NAP processing: A tool for integrating molecular networking, virtual metabolism, and annotation propagation for xenobiotic metabolites.",
         epilog="Example usage:\n"
-               "  python vm-NAP_processing.py --run_biotransformer --type_of_biotransformation='hgut' --debug\n"
-               "  python vm-NAP_processing.py --debug --extra_compounds_table_file='input/extra_compounds-UTF8.tsv' --run_biotransformer\n"
-               "  python vm-NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --ionisation_mode='neg' --run_sygma\n"
-               "  python vm-NAP_processing.py --job_id='false' --extra_compounds_table_file='input/extra_compounds.tsv' --run_sygma --run_biotransformer\n"
-               "  python vm-NAP_processing.py --debug --run_sygma --phase_1_cycle=2 --phase_2_cycle=1\n"
-               "  python vm-NAP_processing.py --debug --run_sygma --sirius_input_file= input/compound_identifications.tsv\n"
-               "  python vm-NAP_processing.py --job_id='false' --extra_compounds_table_file='input/extra_compounds.tsv' --run_biotransformer --mode='standard'\n\n"
+               "  python vm_NAP_processing.py --run_biotransformer --type_of_biotransformation='hgut' --debug\n"
+               "  python vm_NAP_processing.py --debug --extra_compounds_table_file='input/extra_compounds-UTF8.tsv' --run_biotransformer\n"
+               "  python vm_NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --ionisation_mode='neg' --run_sygma\n"
+               "  python vm_NAP_processing.py --job_id='false' --extra_compounds_table_file='input/extra_compounds.tsv' --run_sygma --run_biotransformer\n"
+               "  python vm_NAP_processing.py --debug --run_sygma --phase_1_cycle=2 --phase_2_cycle=1\n"
+               "  python vm_NAP_processing.py --debug --run_sygma --sirius_input_file= input/compound_identifications.tsv\n"
+               "  python vm_NAP_processing.py --job_id='false' --extra_compounds_table_file='input/extra_compounds.tsv' --run_biotransformer --mode='standard'\n\n"
                "Example usage with -k flag:\n"
-               "  python vm-NAP_processing.py --run_biotransformer --mode='-k pred -b superbio -a'\n"
-               "  python vm-NAP_processing.py --run_biotransformer --mode='-k pred -b allHuman -s 2 -cm 3'\n"
-               "  python vm-NAP_processing.py --run_biotransformer --mode='-k cid -b allHuman -s 2 -m \"292.0946;304.0946\" -t 0.01 -a'\n"
-               "  python vm-NAP_processing.py --run_biotransformer --mode='-k pred -q \"cyp450:2; phaseII:1\"'",
+               "  python vm_NAP_processing.py --run_biotransformer --mode='-k pred -b superbio -a'\n"
+               "  python vm_NAP_processing.py --run_biotransformer --mode='-k pred -b allHuman -s 2 -cm 3'\n"
+               "  python vm_NAP_processing.py --run_biotransformer --mode='-k cid -b allHuman -s 2 -m \"292.0946;304.0946\" -t 0.01 -a'\n"
+               "  python vm_NAP_processing.py --run_biotransformer --mode='-k pred -q \"cyp450:2; phaseII:1\"'",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
         )
 
@@ -352,9 +365,10 @@ def run_main():
 def display_help():
     # Define your help message here
     help_message = """ For help run:
-    python vm-NAP_processing.py --help
+    python vm_NAP_processing.py --help
     """
 
     print(help_message)
+
 if __name__ == "__main__":
     run_main()
