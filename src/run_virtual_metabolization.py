@@ -296,6 +296,7 @@ def prepare_for_bio3(type_of_biotransformation, list_smiles):
     try:
         check_java_version()
         print("Java version check completed.")
+        print()
     except Exception as e:
         print(f"Error checking Java version: {e}")
 

@@ -6,7 +6,6 @@ import logging
 import io
 import os
 from datetime import datetime
-import zipfile
 from IPython.display import Markdown, display
 
 # Get the absolute path of the root directory (one level up from 'src')
