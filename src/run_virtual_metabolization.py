@@ -29,10 +29,10 @@ def install_package(package):
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 # Import and install SyGMa
-#install_package("sygma")
+install_package("sygma")
 
 # Import SyGMa after ensuring it's installed
-#import sygma
+import sygma
 
 #Write out the results
 def export_for_SIRIUS(input_df_name, compound_name):
