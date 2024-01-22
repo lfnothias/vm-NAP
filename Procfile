@@ -1,0 +1,1 @@
+web: sh setup.sh && streamlit run vm_NAP_streamlit.py
