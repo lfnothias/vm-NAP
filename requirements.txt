@@ -1,12 +1,10 @@
-numpy
-pandas
-rdkit
-jupyter
-ipykernel
-ipython
-streamlit
-requests
-
-# For molvs, directly use the PyPI package
-molvs
-git+https://github.com/lfnothias/gnps_postprocessing.git@lfnothias-patch-1#egg=gnps_postprocessing
+ipython==8.18.1
+MolVS==0.1.1
+numpy==1.26.3
+pandas==2.2.0
+rdkit==2023.9.4
+Requests==2.31.0
+setuptools==69.0.3
+streamlit==1.30.0
+SyGMa==1.1.0
+#git+https://github.com/lfnothias/gnps_postprocessing.git
