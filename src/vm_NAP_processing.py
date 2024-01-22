@@ -1,5 +1,4 @@
 import argparse
-from IPython.display import Markdown, display
 import streamlit as st
 import sys
 import logging
@@ -8,6 +7,7 @@ import os
 from datetime import datetime
 import zipfile
 import pandas as pd
+from IPython.display import Markdown, display
 
 # Get the absolute path of the root directory (one level up from 'src')
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
