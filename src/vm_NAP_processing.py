@@ -18,6 +18,8 @@ root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_dir)
 
 # Now you can import your custom modules
+import prepare_virtual_metabolization
+import run_virtual_metabolization
 from prepare_virtual_metabolization import *
 from run_virtual_metabolization import *
 
@@ -77,8 +79,6 @@ logging.getLogger('').addHandler(console)
 
 # Redirect stdout to logger
 sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
-
-
 
 def main(args):
     """
