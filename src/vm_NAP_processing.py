@@ -1,4 +1,5 @@
 import argparse
+import pandas as pd
 import streamlit as st
 import sys
 import logging
@@ -6,7 +7,6 @@ import io
 import os
 from datetime import datetime
 import zipfile
-import pandas as pd
 from IPython.display import Markdown, display
 
 # Get the absolute path of the root directory (one level up from 'src')
