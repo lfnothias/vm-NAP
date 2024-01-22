@@ -6,5 +6,4 @@ rdkit==2023.9.4
 Requests==2.31.0
 setuptools==69.0.3
 streamlit==1.30.0
-SyGMa==1.1.0
 #git+https://github.com/lfnothias/gnps_postprocessing.git
