@@ -1,11 +1,6 @@
 import argparse
-try:
-    from IPython.display import Markdown, display
-    import streamlit as st
-    # Your code that uses IPython here
-except ImportError:
-    # Fallback code for environments without IPython
-    pass
+from IPython.display import Markdown, display
+import streamlit as st
 import sys
 import logging
 import io
