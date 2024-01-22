@@ -12,14 +12,13 @@ import io
 import os
 from datetime import datetime
 import zipfile
+import pandas as pd
 
 # Get the absolute path of the root directory (one level up from 'src')
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_dir)
 
 # Now you can import your custom modules
-import prepare_virtual_metabolization
-import run_virtual_metabolization
 from prepare_virtual_metabolization import *
 from run_virtual_metabolization import *
 
