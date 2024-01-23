@@ -176,42 +176,13 @@ def check_java_version():
     """Check and print the installed Java version."""
     try:
         java_version = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT)
-        print(java_version.decode())
-        print("Java version check completed.")
+        #print("Java version check completed.")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while checking Java version: {e.output.decode()}")
     except Exception as e:
         print(f"An unexpected error occurred while checking Java version: {e}")
 
-#Defining a function to download and unzip Biotransformer
-def old_download_and_unzip_biotransformer():
-    """Download and unzip the BioTransformer software if not already present."""
-
-    if not os.path.exists('biotransformer3.zip'):
-        print("Downloading biotransformer3 ...")
-        url = 'https://bitbucket.org/wishartlab/biotransformer3.0jar/get/6432cf887ed70.zip'
-        try:
-            response = requests.get(url, allow_redirects=True)
-            response.raise_for_status()
-            with open('biotransformer3.zip', 'wb') as file:
-                file.write(response.content)
-        except requests.RequestException as e:
-            print(f"An error occurred while downloading BioTransformer: {e}")
-            return
-        print("BioTransformer downloaded.")
-    else:
-        print("BioTransformer was already downloaded - skipping download.")
-
-    if not os.path.exists('BioTransformer3.0_20230525.jar'):
-        try:
-            with zipfile.ZipFile('biotransformer3.zip', 'r') as zip_ref:
-                zip_ref.extractall('.')
-            print("BioTransformer is unzipped.")
-        except Exception as e:
-            print(f"An error occurred while unzipping BioTransformer: {e}")
-    else:
-        print("BioTransformer is already unzipped - skipping unzip.")
-
+#Defining a function to download and unzip the BioTransformer software if not already present
 def download_and_unzip_biotransformer():
     """Download and unzip the BioTransformer software if not already present."""
 
@@ -220,31 +191,31 @@ def download_and_unzip_biotransformer():
     local_jar_file = 'BioTransformer3.0_20230525.jar'
 
     if not os.path.exists(local_zip_file):
-        print(f"Downloading {local_zip_file} from {url}...")
+        #print(f"Downloading {local_zip_file} from {url}...")
         try:
             response = requests.get(url, allow_redirects=True)
             if response.status_code == 200:
                 with open(local_zip_file, 'wb') as file:
                     file.write(response.content)
-                print(f"Downloaded {local_zip_file}.")
+                #print(f"Downloaded {local_zip_file}.")
             else:
                 print(f"Failed to download. Status code: {response.status_code}")
         except requests.RequestException as e:
             print(f"An error occurred while downloading BioTransformer: {e}")
             return
-    else:
-        print(f"{local_zip_file} was already downloaded - skipping download.")
+    #else:
+        #print(f"{local_zip_file} was already downloaded - skipping download.")
 
     if not os.path.exists(local_jar_file):
         print(f"Unzipping {local_zip_file}.")
         try:
             with zipfile.ZipFile(local_zip_file, 'r') as zip_ref:
                 zip_ref.extractall('.')
-            print(f"{local_zip_file} is unzipped.")
+            #print(f"{local_zip_file} is unzipped.")
         except Exception as e:
             print(f"An error occurred while unzipping BioTransformer: {e}")
-    else:
-        print(f"{local_jar_file} is already unzipped - skipping unzip.")
+    #else:
+        #print(f"{local_jar_file} is already unzipped - skipping unzip.")
 
 #Prepare the execution environment for biotransformer3 by creating or cleaning the output folder
 def prepare_environment(source_dir, dest_dir):
@@ -254,7 +225,7 @@ def prepare_environment(source_dir, dest_dir):
         new_readme_path = os.path.join(source_dir, "README_BioTransformer.md")
         if os.path.exists(readme_path):
             os.rename(readme_path, new_readme_path)
-            print("Renamed README.md to README_BioTransformer.md")
+            #print("Renamed README.md to README_BioTransformer.md")
             for filename in os.listdir(source_dir):
                 source_file = os.path.join(source_dir, filename)
                 dest_file = os.path.join(dest_dir, filename)
@@ -266,7 +237,7 @@ def prepare_environment(source_dir, dest_dir):
 def validate_biotransformation_type(type_of_biotransformation):
     list_of_biotransformation = ['ecbased', 'cyp450', 'phaseII', 'hgut', 'superbio', 'allHuman', 'envimicro']
     if type_of_biotransformation in list_of_biotransformation:
-        print('     Biotransformation: '+type_of_biotransformation)
+        #print('     Biotransformation: '+type_of_biotransformation)
         return True
     else:
         print('Check the type/spelling of the biotransformation!')
@@ -295,36 +266,35 @@ def prepare_for_bio3(type_of_biotransformation, list_smiles):
     # Check Java version
     try:
         check_java_version()
-        print("Java version check completed.")
-        print()
+        print(" > Java version check completed...")
     except Exception as e:
         print(f"Error checking Java version: {e}")
 
     # Download and unzip BioTransformer
     try:
         download_and_unzip_biotransformer()
-        print("BioTransformer download and unzip completed.")
+        print(" > BioTransformer download and unzip completed...")
     except Exception as e:
         print(f"Error downloading and unzipping BioTransformer: {e}")
 
     # Prepare the working environment
     try:
         prepare_environment('wishartlab-biotransformer3.0jar-6432cf887ed7', '.',)
-        print("BioTransformer environment preparation completed.")
+        print(" > BioTransformer environment preparation completed...")
     except Exception as e:
         print(f"Error preparing the working environment: {e}")
 
     # Validate the biotransformation type
     try:
         validate_biotransformation_type(type_of_biotransformation)
-        print("Biotransformation type validation completed.")
+        print(" > Biotransformation type validation completed...")
     except Exception as e:
         print(f"Error validating biotransformation type: {e}")
 
     # Create the output folder if it doesn't exist, clear if it does
     try:
         create_or_clear_output_folder(output_folder)
-        print("Output folder creation/clearing completed.")
+        print(" > Output folder creation/clearing completed...")
     except Exception as e:
         print(f"Error creating or clearing the output folder: {e}")
 

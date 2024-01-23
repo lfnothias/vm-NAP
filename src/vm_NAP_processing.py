@@ -73,12 +73,15 @@ logging.getLogger('').addHandler(console)
 # Redirect stdout to logger
 sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
 
+def args_print(args):
+    logging.info("Script started with arguments: %s", args)
+
 def main(args):
     """
     Main function to execute the vm_NAP processing workflow.
     """
     print( '')
-    print( '## STARTING vm_NAP ')
+    print( '## STARTING vm-NAP ')
     logging.info("Script started with arguments: %s", args)
     print( '')
 
@@ -100,7 +103,7 @@ def main(args):
 
     # Use dynamic_string in your script where needed
     # For example, in file naming or logging
-    print(f"Dynamic string: {dynamic_string}")
+    #print(f"Dynamic string: {dynamic_string}")
 
     prepare_for_virtual_metabolization.list_compound_name = []
     prepare_for_virtual_metabolization.list_smiles = []
