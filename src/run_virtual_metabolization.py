@@ -23,7 +23,7 @@ import sys
 def install_package(package):
     try:
         pkg_resources.require(package)
-        print(f"{package} is already installed.")
+        #print(f"{package} is already installed.")
     except pkg_resources.DistributionNotFound:
         print(f"{package} not found. Installing...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
@@ -207,7 +207,7 @@ def download_and_unzip_biotransformer():
         #print(f"{local_zip_file} was already downloaded - skipping download.")
 
     if not os.path.exists(local_jar_file):
-        print(f"Unzipping {local_zip_file}.")
+        #print(f"Unzipping {local_zip_file}.")
         try:
             with zipfile.ZipFile(local_zip_file, 'r') as zip_ref:
                 zip_ref.extractall('.')
@@ -333,7 +333,19 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
                 biotransformcall = 'java -jar BioTransformer3.0_20230525.jar -ismi "' + a +'" -ocsv '+str(output_filename)+' '+mode
 
             biotransformcall = biotransformcall.split() # because call takes a list of strings 
-            call(biotransformcall)
+            #call(biotransformcall)
+            process = subprocess.Popen(biotransformcall, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+
+            # Decode and process the output
+            stdout_decoded = stdout.decode()
+            stderr_decoded = stderr.decode()
+
+            # Parse the output and filter for the desired line
+            for line in stderr_decoded.splitlines():  # Change to stdout_decoded if needed
+                if line.startswith("Processing molecule with SMILES:"):
+                    print(line)
+                    break  # Stop after printing the first matching line
 
             try:
                 # Check if the output file exists and is not empty
