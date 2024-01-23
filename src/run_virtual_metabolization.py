@@ -334,15 +334,14 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
 
             biotransformcall = biotransformcall.split() # because call takes a list of strings 
             #call(biotransformcall)
-            process = subprocess.Popen(biotransformcall, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = process.communicate()
+            result = subprocess.run(biotransformcall, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
 
             # Decode and process the output
-            stdout_decoded = stdout.decode()
-            stderr_decoded = stderr.decode()
+            stdout_decoded = result.stdout
+            stderr_decoded = result.stderr
 
             # Parse the output and filter for the desired line
-            for line in stderr_decoded.splitlines():  # Change to stdout_decoded if needed
+            for line in stdout_decoded.splitlines():  # Change to stdout_decoded if needed
                 if line.startswith("Processing molecule with SMILES:"):
                     print(line)
                     break  # Stop after printing the first matching line
