@@ -73,9 +73,6 @@ logging.getLogger('').addHandler(console)
 # Redirect stdout to logger
 sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
 
-def args_print(args):
-    logging.info("Script started with arguments: %s", args)
-
 def main(args):
     """
     Main function to execute the vm_NAP processing workflow.
