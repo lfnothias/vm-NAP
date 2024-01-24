@@ -141,8 +141,8 @@ def load_extra_compounds(path):
         
 
 def append_to_list_if_not_present(base_list_names, base_list_smiles, extra_list_names, extra_list_smiles):
-    print('Initial number of compound names in the list = ' + str(len(base_list_names)))
-    print('Initial number of SMILES in the list = ' + str(len(base_list_smiles)))
+    #print('Initial number of compound names in the list = ' + str(len(base_list_names)))
+    #print('Initial number of SMILES in the list = ' + str(len(base_list_smiles)))
 
     for n, s in zip(extra_list_names, extra_list_smiles):
         # Remove salts from SMILES and process the molecule
@@ -169,21 +169,24 @@ def load_csifingerid_cosmic_annotations(path_compound_identifications):
 def df_csifingerid_cosmic_annotations_filtering(compound_identification_table, zodiac_score=False, confidence_score=False, links=False):
     
     if zodiac_score != False:
-        print('Filtering with ZodiacScore >= '+str(zodiac_score))
+        #print('Filtering with ZodiacScore >= '+str(zodiac_score))
         compound_identification_table = compound_identification_table[compound_identification_table['ZodiacScore']>=zodiac_score]
-        print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        #print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        print(' > Filtered with ZodiacScore')
         
     if confidence_score != 0:
-        print('Filtering with Confidence Score >= '+str(confidence_score))
+        #print('Filtering with Confidence Score >= '+str(confidence_score))
         compound_identification_table = compound_identification_table[compound_identification_table['ConfidenceScore']>=confidence_score]
-        print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        #print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        print(' > Filtered with Confidence Score')
         
     if links != False:
-        print('Filtering with database links >= '+str(links))
+        #print('Filtering with database links >= '+str(links))
         compound_identification_table = compound_identification_table[compound_identification_table['links'].str.contains(links, na=False)]
-        print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        #print('Total entries remaining = '+str(compound_identification_table.shape[0]))
+        print(' > Filtered with Database Links')
         
     if zodiac_score == False and confidence_score == False and links == False:
-        print('No filter were applied !')
+        print(' > No filter was applied !')
         
     return compound_identification_table
