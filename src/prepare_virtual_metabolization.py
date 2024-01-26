@@ -46,7 +46,7 @@ def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smile
 
     print(' ==== WARNING =====')
     print('###### '+str(number_of_annotations_without_structure)+' annotations dont have a structure identifier and will be discarded from downstream processing, unless you do the following:')
-    print('You can either update the GNPS library and rerun the GNPS job. Or you can provide a structure identifier in the dedicated cell below')    
+    print('Please read the documentation for how to deal with annotations without structure identifiers')    
     print('These are the compounds without structure identifiers:')
     list_missing_compounds = set(df_annotations_missing_structure['Compound_Name'])
     print_compound_names(list_missing_compounds)

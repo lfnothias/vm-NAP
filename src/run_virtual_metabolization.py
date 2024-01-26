@@ -345,7 +345,7 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
             stdout_decoded = result.stdout
             stderr_decoded = result.stderr
 
-            # Conditionally process stderr
+            # Conditionally process stderr in case of error or unexpected message
             if result.returncode != 0 or (stderr_decoded.strip() and "JAVA_TOOL_OPTIONS" not in stderr_decoded):
                 print("Error or unexpected message from subprocess:")
                 print(stderr_decoded)
