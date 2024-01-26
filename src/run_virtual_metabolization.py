@@ -84,6 +84,54 @@ def export_for_NAP(input_df_name, compound_name):
     print('Number of unique metabolites considered = ' +str(df_new.shape[0]))   
     df_new.to_csv(input_df_name[:-4]+'_NAP.tsv', sep = '\t', index = False, header= False)
 
+def concatenate_old_method(metabolite_data, df_master, top_sygma_candidates):
+    if metabolite_data:
+        df = pd.DataFrame(metabolite_data)
+        df = df.head(top_sygma_candidates + 1)  # +1 to include the parent metabolite
+        df = df.dropna(axis=1, how='all')
+        df_master_old = pd.concat([df_master, df], ignore_index=True)
+    return df_master_old
+
+def concatenate_new_method(metabolite_data, df_master, top_sygma_candidates):
+    if metabolite_data:
+        df = pd.DataFrame(metabolite_data)
+        df = df.head(top_sygma_candidates + 1)  # +1 to include the parent metabolite
+        df = df.dropna(axis=1, how='all')
+        # Ensure consistent data types before concatenation
+        for column in df.columns:
+            if column in df_master.columns:
+                dtype = df_master[column].dtype
+                df[column] = df[column].astype(dtype)
+        df_master_new = pd.concat([df_master, df], ignore_index=True)
+    return df_master_new
+
+def compare_methods(metabolite_data, df_master, top_sygma_candidates):
+    df_master_old = concatenate_old_method(metabolite_data, df_master, top_sygma_candidates)
+    df_master_new = concatenate_new_method(metabolite_data, df_master, top_sygma_candidates)
+    
+    # Compare the shapes, column names, and data types
+    shape_equal = df_master_old.shape == df_master_new.shape
+    columns_equal = df_master_old.columns.equals(df_master_new.columns)
+    dtypes_equal = df_master_old.dtypes.equals(df_master_new.dtypes)
+    
+    # Check if the DataFrames are exactly the same
+    data_equal = df_master_old.equals(df_master_new)
+    
+    # Print the results
+    print(f"Shape Equal: {shape_equal}")
+    print(f"Columns Equal: {columns_equal}")
+    print(f"Data Types Equal: {dtypes_equal}")
+    print(f"Data Equal: {data_equal}")
+    
+    # Optional: return the results if you want to use them programmatically
+    return {
+        "shape_equal": shape_equal,
+        "columns_equal": columns_equal,
+        "dtypes_equal": dtypes_equal,
+        "data_equal": data_equal,
+        "df_master_old": df_master_old,
+        "df_master_new": df_master_new
+    }
 
 # Run SyGMa on two lists of SMILES and compound name in batch
 def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name, compound_name):
@@ -145,6 +193,8 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
                     
                     # Concatenate df_master and df
                     df_master = pd.concat([df_master, df], ignore_index=True)
+
+                    print(compare_methods(metabolite_data, df_master, top_sygma_candidates))
 
             except Exception as e:
                 print(f"Error processing molecule: {a}. Error: {e}")
