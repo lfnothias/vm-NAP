@@ -24,7 +24,7 @@ from gnps_postprocessing.gnps_results_postprocess import *
 
 def print_compound_names(list_compounds):
     for item in sorted(list_compounds):
-        print('\''+item+'\',')
+        print(' > '+'\''+item+'\',')
     del list_compounds
 
     

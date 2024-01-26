@@ -138,7 +138,16 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
                 if metabolite_data:
                     df = pd.DataFrame(metabolite_data)
                     df = df.head(top_sygma_candidates + 1)  # +1 to include the parent metabolite
+                    
+                    # Drop columns where all elements are NA
                     df = df.dropna(axis=1, how='all')
+                    
+                    # Explicitly identify and drop columns that are empty or contain only NA values, before concatenation
+                    # This makes the behavior explicit and ensures compatibility with future pandas versions
+                    cols_to_exclude = df.columns[df.isna().all()]
+                    df = df.drop(columns=cols_to_exclude)
+                    
+                    # Concatenate df_master and df
                     df_master = pd.concat([df_master, df], ignore_index=True)
 
             except Exception as e:
