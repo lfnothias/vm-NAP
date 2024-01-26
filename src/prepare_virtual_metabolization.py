@@ -163,7 +163,7 @@ def load_csifingerid_cosmic_annotations(path_compound_identifications):
                                 sep='\t', 
                                 usecols =['id','ConfidenceScore','ZodiacScore','name','links','smiles'], 
                                 low_memory=False)
-    df.name.replace(np.nan, 'no_name', regex=True, inplace=True)
+    df['name'] = df['name'].replace(np.nan, 'no_name', regex=True)
     return df 
 
 def df_csifingerid_cosmic_annotations_filtering(compound_identification_table, zodiac_score=False, confidence_score=False, links=False):
