@@ -10,7 +10,7 @@ import subprocess
 def install_package(package):
     try:
         pkg_resources.require(package)
-        print(f"{package} is already installed.")
+        #print(f"{package} is already installed.")
     except pkg_resources.DistributionNotFound:
         print(f"{package} not found. Installing...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
@@ -45,7 +45,7 @@ def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smile
         print('that corresponds to '+(str(len(list_unique_planarstructure)))+' unique planar structures')
 
     print(' ==== WARNING =====')
-    print(str(number_of_annotations_without_structure)+' annotations dont have a structure identifier and will be discarded from downstream processing, unless you do the following:')
+    print('###### '+str(number_of_annotations_without_structure)+' annotations dont have a structure identifier and will be discarded from downstream processing, unless you do the following:')
     print('You can either update the GNPS library and rerun the GNPS job. Or you can provide a structure identifier in the dedicated cell below')    
     print('These are the compounds without structure identifiers:')
     list_missing_compounds = set(df_annotations_missing_structure['Compound_Name'])

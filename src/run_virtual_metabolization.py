@@ -93,13 +93,9 @@ def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycl
     
     print('#### Starting SyGMa computation')
     print('Number of compounds that will be subject to SyGMa metabolisation = '+str(len(list_smiles)))
-    print('Number of phase I cycles = '+str(phase_1_cycle,)) 
-    print('Number of phase II cycles = '+str(phase_2_cycle))
+    print('Number of phase I cycles = '+str(phase_1_cycle,)+'; Number of phase II cycles = '+str(phase_2_cycle)) 
     print('Keep only the top SyGMa candidates = '+str(top_sygma_candidates))
-    print('If you are running many compounds or cycles, and maxing out RAM memory available, you can decrease the batch size. Otherwise the value can be increased for faster computation.')
-    print('======')
-    print('Please wait')
-    print('======')
+    #print('If you are running many compounds or cycles, and maxing out RAM memory available, you can decrease the batch size. Otherwise the value can be increased for faster computation.')
 
     # Define SyGMa parameters      
     scenario = sygma.Scenario([
