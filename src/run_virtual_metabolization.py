@@ -117,8 +117,10 @@ def compare_methods(metabolite_data, df_master, top_sygma_candidates):
     # Check if the DataFrames are exactly the same
     data_equal = df_master_old.equals(df_master_new)
 
-    if df_master_new == df_master_old:
-        print('Dataframes are equal')
+    if df_master_old.equals(df_master_new):
+        print("DataFrames are identical.")
+    else:
+        print("DataFrames are not identical.")
     
     # Print the results
     print(f"Shape Equal: {shape_equal}")
