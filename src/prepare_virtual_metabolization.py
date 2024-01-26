@@ -90,11 +90,11 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
     # Input: consolidate GNPS annotation table
     # Do some duplicate filtering and select planar or stereo structure
     
-    print('Number of spectral library annotations = '+str(df_annotations.shape[0]))
+    #print('Number of spectral library annotations = '+str(df_annotations.shape[0]))
     
     if use_planar_structure == True:
         df_annotations = df_annotations[df_annotations[smiles_planar_column].str.contains('nan') == False]
-        print('Number of spectral annotations with planar SMILES/InChI = '+str(df_annotations.shape[0]))
+        #print('Number of spectral annotations with planar SMILES/InChI = '+str(df_annotations.shape[0]))
 
         if drop_duplicated_structure == True:
             try: 
@@ -106,11 +106,11 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
 
         list_compound_name = list(df_annotations[compound_name])
         list_smiles = list(df_annotations[smiles_planar_column])
-        print('Number of unique planar SMILES considered = '+str(len(list_smiles)))
+        #print('Number of unique planar SMILES considered = '+str(len(list_smiles)))
     
     else:
         df_annotations = df_annotations[df_annotations[smiles_column].str.contains('nan') == False]
-        print('Number of spectral annotations with valid SMILES or InChI = '+str(df_annotations.shape[0]))
+        #print('Number of spectral annotations with valid SMILES or InChI = '+str(df_annotations.shape[0]))
         
         if drop_duplicated_structure == True:
             try: 
@@ -122,7 +122,7 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
 
         list_compound_name = list(df_annotations[compound_name])
         list_smiles = list(df_annotations[smiles_column])
-        print('Number of unique SMILES = '+str(len(list_smiles)))
+        #print('Number of unique SMILES = '+str(len(list_smiles)))
         
     prepare_for_virtual_metabolization.list_compound_name = list_compound_name
     prepare_for_virtual_metabolization.list_smiles = list_smiles

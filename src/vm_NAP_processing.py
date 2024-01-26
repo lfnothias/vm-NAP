@@ -126,7 +126,7 @@ def main(args):
 
         # Optional filtering based on compound names
         df_annotations_filtered = apply_filtering(df_annotations, args.compound_name_to_keep)
-        print('Number of annotations after filtering = ' + str(df_annotations_filtered.shape[0]))
+        #print('Number of annotations after filtering = ' + str(df_annotations_filtered.shape[0]))
         print( '')
 
         prepare_for_virtual_metabolization(df_annotations_filtered,
