@@ -339,10 +339,16 @@ def run_biotransformer3(mode, list_smiles, list_compound_name, type_of_biotransf
 
             biotransformcall = biotransformcall.split() # because call takes a list of strings 
             #call(biotransformcall)
-            result = subprocess.run(biotransformcall, stdout=subprocess.PIPE, text=True, check=True)
+            result = subprocess.run(biotransformcall, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
 
             # Decode and process the output
             stdout_decoded = result.stdout
+            stderr_decoded = result.stderr
+
+            # Conditionally process stderr
+            if result.returncode != 0 or (stderr_decoded.strip() and "JAVA_TOOL_OPTIONS" not in stderr_decoded):
+                print("Error or unexpected message from subprocess:")
+                print(stderr_decoded)
 
             # Parse the output and filter for the desired line
             for line in stdout_decoded.splitlines():  # Change to stdout_decoded if needed
