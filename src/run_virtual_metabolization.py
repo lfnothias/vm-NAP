@@ -116,22 +116,15 @@ def compare_methods(metabolite_data, df_master, top_sygma_candidates):
     
     # Check if the DataFrames are exactly the same
     data_equal = df_master_old.equals(df_master_new)
+
+    if df_master_new == df_master_old:
+        print('Dataframes are equal')
     
     # Print the results
     print(f"Shape Equal: {shape_equal}")
     print(f"Columns Equal: {columns_equal}")
     print(f"Data Types Equal: {dtypes_equal}")
     print(f"Data Equal: {data_equal}")
-    
-    # Optional: return the results if you want to use them programmatically
-    return {
-        "shape_equal": shape_equal,
-        "columns_equal": columns_equal,
-        "dtypes_equal": dtypes_equal,
-        "data_equal": data_equal,
-        "df_master_old": df_master_old,
-        "df_master_new": df_master_new
-    }
 
 # Run SyGMa on two lists of SMILES and compound name in batch
 def run_sygma_batch(list_smiles, list_compound_name, phase_1_cycle, phase_2_cycle, top_sygma_candidates, output_name, compound_name):
