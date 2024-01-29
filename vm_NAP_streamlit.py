@@ -5,22 +5,21 @@ from datetime import datetime
 import subprocess
 import zipfile
 from io import BytesIO
-import streamlit as st
 import tempfile
 import shutil
 from datetime import datetime
 
-
 # Custom CSS to change the background color of text boxes
 st.set_page_config(
-    page_title="vm_NAP Processing Web-app",
+    page_title="vm-NAP Processing Web-app",
     layout="wide",  # Use 'wide' for a full-width layout
 )
 
 # Large Title and Introductory Sentence
 st.markdown("""
-    <h1 style='text-align: center; color: black;'>vm_NAP Processing Web-app</h1>
-    <p style='text-align: center;'>Welcome to the vm_NAP Processing Web Application. This tool integrates molecular networking, virtual metabolism, and annotation propagation for xenobiotic metabolites.</p>
+    <h1 style='text-align: center; color: black;'>vm-NAP Processing Web-app</h1>
+    <p style='text-align: center;'>Welcome to the - Virtual Metabolization - Network Annotation Propagation - processing web application: </p>
+    <p style='text-align: center;'>This tool integrates molecular networking, virtual metabolism, and annotation propagation for xenobiotic metabolites.</p>
     <div style="text-align: center;">
         <a href="https://link_to_documentation">Read the Documentation</a> |
         <a href="https://link_to_preprint">Read and Cite the Preprint</a> |
@@ -35,7 +34,6 @@ if 'button_clicked' not in st.session_state:
     st.session_state.button_clicked = False
 
 # Two-column layout
-#column1, column2, column3, column4 = st.columns([3, 3, 3, 3])
 container = st.container()
 column_width = 500
 column1, column2, column3  = container.columns([2, 2, 2])
@@ -84,9 +82,9 @@ with column3:
 
 
     # BioTransformer Parameters Section
-    with st.expander("**BioTransformer metabolisation**"):
+    with st.expander("**BioTransformer metabolisation**", expanded=True):
         st.image(logo4, width=200)
-        run_biotransformer = st.checkbox("Run BioTransformer", value=False)
+        run_biotransformer = st.checkbox("Run BioTransformer", value=True)
         mode = st.text_input("Mode for BioTransformer", "btType")
         type_of_biotransformation = st.selectbox("Type of Biotransformation", ['ecbased', 'cyp450', 'phaseII', 'hgut', 'superbio', 'allHuman', 'envimicro'], index=5)
         number_of_steps = st.number_input("Number of Steps", min_value=1, max_value=3, value=1)
@@ -95,8 +93,7 @@ with column3:
     debug_mode = st.checkbox("**Debug Mode for Quick Testing** (untick for full computation)", True)
     max_compounds_debug = st.number_input("Max Compounds in Debug Mode", 3, format="%d")
 
-    run_button = st.button("Run vm_NAP Processing")
-    
+    run_button = st.button("Run vm-NAP Processing")
     
 if run_button != "None":
     # Construct the command to run vm_NAP_processing.py
@@ -245,7 +242,7 @@ if run_button != "None":
 
         # Check the return code to determine success or failure
         if process.returncode == 0:
-            st.success("vm_NAP Processing completed successfully.")
+            st.success("vm-NAP Processing completed successfully.")
 
             # Create a ZIP archive of the files
             zip_buffer = BytesIO()
@@ -267,4 +264,4 @@ if run_button != "None":
                 mime="application/zip"
             )
         else:
-            st.error("An error occurred during vm_NAP Processing.")
+            st.error("An error occurred during vm-NAP Processing.")
