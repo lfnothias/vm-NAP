@@ -1,3 +1,4 @@
+# Importing necessary libraries for data manipulation, numerical operations, and system interactions
 import pandas as pd
 import numpy as np
 import math
@@ -6,7 +7,7 @@ import sys
 import pkg_resources
 import subprocess
 
-# Function to check and install packages
+# Function to check for the presence of a package and install it if not present.
 def install_package(package):
     try:
         pkg_resources.require(package)
@@ -15,19 +16,22 @@ def install_package(package):
         print(f"{package} not found. Installing...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-#Installing gnps_postprocessing
+# Ensure the 'gnps_postprocessing' package is installed as it's crucial for GNPS data processing
 install_package("gnps_postprocessing")
+
+# Importing modules from the 'gnps_postprocessing' package after ensuring the package is installed
 import gnps_postprocessing
 from gnps_postprocessing.gnps_download_results import *
 from gnps_postprocessing.consolidate_structures import *
 from gnps_postprocessing.gnps_results_postprocess import *
 
+# Function to print out compound names in a sorted order and then clear the list. Primarily used for displaying missing compounds.  
 def print_compound_names(list_compounds):
     for item in sorted(list_compounds):
         print(' > '+'\''+item+'\',')
     del list_compounds
 
-    
+# Function to process GNPS annotations, filter based on structure identifiers, and display statistics and warnings about the processed annotations.
 def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smiles_planar_column=False):
     #Get info on consolidated GNPS annotation table
     
@@ -55,14 +59,14 @@ def get_info_gnps_annotations(df_annotations, inchi_column, smiles_column, smile
 
     return df_annotations
 
-
+# Function to filter and print compound names based on the length of their associated tags. Used for detailed insights into specific compounds.
 def print_compound_name_for_tags(df_annotations):
         mask = (df_annotations['tags'].astype('str').str.len() > 4)
         df = df_annotations.loc[mask]
         df = df.drop_duplicates(subset=['Compound_Name'])
         return df.sort_values(['tags'])[['tags','Compound_Name']]
     
-
+# Function to filter a DataFrame of annotations based on provided compound names or tags, allowing a more targeted analysis.
 def df_annotations_filtering(df_annotations, compound_name=False, tags=False):
     #If compound names or tags are available, we generate subtables
     if compound_name != False:
@@ -83,8 +87,7 @@ def df_annotations_filtering(df_annotations, compound_name=False, tags=False):
         
     return df_annotations
 
-
-
+# Function to prepare data for virtual metabolization by performing duplicate filtering, and selecting between planar or stereo structures based on the parameters.
 def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_planar_column,  smiles_column=False, drop_duplicated_structure = True, use_planar_structure = True):
     
     # Input: consolidate GNPS annotation table
@@ -101,7 +104,6 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
                 df_annotations = df_annotations.sort_values(by=['MQScore'], ascending=False)
             except:
                 pass
-                
             df_annotations = df_annotations.drop_duplicates(subset=smiles_planar_column, keep='first')
 
         list_compound_name = list(df_annotations[compound_name])
@@ -129,7 +131,7 @@ def prepare_for_virtual_metabolization(df_annotations, compound_name, smiles_pla
     
     return df_annotations
 
-
+# Function to load additional compounds from a specified file, expecting a two-column format with compound names and SMILES without headers.
 def load_extra_compounds(path):
     #Table must be two columns tab-separeted with compound and smiles (no headers).
     extra_compounds_table = pd.read_csv(path, sep='\t')
@@ -139,7 +141,7 @@ def load_extra_compounds(path):
     if len(load_extra_compounds.extra_compound_names) != len(load_extra_compounds.extra_compound_smiles):
         print('!!!!!! VERIFY THE INTEGRITY OF THE FILE FOR EXTRA COMPOUNDS !!!!!!!!! -> DIFFERENT NUMBER OF COMPOUNDS NAME AND SMILES')
         
-
+# Function to append new compounds to the base lists if they are not already present, ensuring uniqueness and cleaning the SMILES strings from salts and certain characters.
 def append_to_list_if_not_present(base_list_names, base_list_smiles, extra_list_names, extra_list_smiles):
     #print('Initial number of compound names in the list = ' + str(len(base_list_names)))
     #print('Initial number of SMILES in the list = ' + str(len(base_list_smiles)))
@@ -156,8 +158,7 @@ def append_to_list_if_not_present(base_list_names, base_list_smiles, extra_list_
     print('Final number of compound names in the list = ' + str(len(base_list_names)))
     print('Final number of SMILES in the list = ' + str(len(base_list_smiles)))
 
-    
-    
+# Function to load CSI:FingerID and COSMIC annotations from a specified file, selectively picking important columns for further processing.
 def load_csifingerid_cosmic_annotations(path_compound_identifications): 
     df = pd.read_csv(path_compound_identifications,
                                 sep='\t', 
@@ -166,6 +167,7 @@ def load_csifingerid_cosmic_annotations(path_compound_identifications):
     df['name'] = df['name'].replace(np.nan, 'no_name', regex=True)
     return df 
 
+# Function to filter CSI:FingerID and COSMIC annotations based on provided criteria like Zodiac score, confidence score, and database links, enhancing data quality for subsequent analysis.
 def df_csifingerid_cosmic_annotations_filtering(compound_identification_table, zodiac_score=False, confidence_score=False, links=False):
     
     if zodiac_score != False:
