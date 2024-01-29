@@ -1,24 +1,26 @@
+# Standard library imports
 import argparse
-import pandas as pd
-import streamlit as st
-import sys
-import logging
 import io
+import logging
 import os
+import sys
 from datetime import datetime
-from IPython.display import Markdown, display
+
+# Third-party imports
+import pandas as pd
 
 # Get the absolute path of the root directory (one level up from 'src')
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_dir)
 
-# Now you can import your custom modules
+# Local application/library specific imports
 from prepare_virtual_metabolization import *
 from run_virtual_metabolization import *
 
 class StreamToLogger:
     """
-    Custom stream object that redirects writes to a logger instance.
+    Redirect writes to a logger instance. This is particularly useful for
+    redirecting stdout from third-party libraries that use print statements.
     """
     def __init__(self, logger, log_level=logging.INFO):
         self.logger = logger
@@ -34,7 +36,8 @@ class StreamToLogger:
 
 class SuppressOutput:
     """
-    Context manager to suppress the standard output.
+    Temporarily redirect stdout to prevent print statements from executing.
+    Useful in scenarios where you want to suppress noise from third-party libraries.
     """
     def __enter__(self):
         self._original_stdout = sys.stdout
