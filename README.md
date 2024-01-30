@@ -27,10 +27,15 @@ Install locally in conda with:
 
 #### vm-NAP web-app locally
 
-> Start the streamlit app:
+> Start the streamlit app with:
 
 ```
-streamlit run vm-NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
+streamlit run vm_NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
+```
+> or
+
+```
+streamlit run vm_NAP_streamlit.py --server.port 8501 --server.address localhost
 ```
 
 #### vm-NAP commandline:
@@ -38,13 +43,13 @@ streamlit run vm-NAP_streamlit.py --server.port 8501 --server.address 0.0.0.0
 > Representative command for the python script:
 
 ```
-python src/vm-NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --run_sygma --run_biotransformer --sirius_input_file 'input/compound_identifications.tsv' --debug --max_compounds_debug=3
+python src/vm_NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --run_sygma --run_biotransformer --sirius_input_file 'input/compound_identifications.tsv' --debug --max_compounds_debug=3
 ```
 
 > Running this for help:
 
 ```
-python src/vm-NAP_processing.py --help
+python src/vm_NAP_processing.py --help
 ```
 
 
