@@ -8,19 +8,19 @@ This notebook downloads results of spectral annotations from [classical molecula
 ### vm-NAP web-app (cloud-based)
 
 Click on the following link to launch the vm-NAP web-app. 
-Note that this is a streamlit temporary instance with limited ressources.
+Note that this is a streamlit temporary instance with limited ressources. For better performance or larger projects, please install and use it locally.
 
 
 ### Local installation
 
 Install locally in conda with:
 
->Download the present repository.
+>Download the present repository. Use git clone or download manually.
 
 >In the terminal, navigate to the repository folder.
 
 > Install the environment with:
-`conda env create --file environment.yml`
+`conda env create --file environment_local.yml`
 
 > Initiate the environment:
 `conda activate vm-NAP`
@@ -43,7 +43,7 @@ streamlit run vm_NAP_streamlit.py --server.port 8501 --server.address localhost
 > Representative command for the python script:
 
 ```
-python src/vm_NAP_processing.py --job_id='bbee697a63b1400ea585410fafc95723' --run_sygma --run_biotransformer --sirius_input_file 'input/compound_identifications.tsv' --debug --max_compounds_debug=3
+python src/vm_NAP_processing.py --job_id=bbee697a63b1400ea585410fafc95723 --run_sygma --run_biotransformer --sirius_input_file=input/compound_identifications.tsv --debug --max_compounds_debug=3
 ```
 
 > Running this for help:
@@ -59,6 +59,7 @@ The interactive notebook can be accessed via this badge -> [![Binder](https://my
 Alternative - The interactive notebook can be accessed via this badge an gesis server-> [![Binder](https://mybinder.org/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/2401_vm-NAP-demo-notebook.ipynb)
 
 Note that this is also a temporary instance with limited ressources.
+
 ### Using vm-NAP with Network Annotation Propagation
 
 See the documentation for custom database in [NAP](https://ccms-ucsd.github.io/GNPSDocumentation/nap/#structure-database) and how to run Network Annotation Propagation (NAP) on GNPS [https://ccms-ucsd.github.io/GNPSDocumentation/nap/#structure-database](https://ccms-ucsd.github.io/GNPSDocumentation/nap/#structure-database).
