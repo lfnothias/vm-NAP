@@ -6,6 +6,7 @@ import os
 import sys
 from datetime import datetime
 import pandas as pd
+from IPhyton.display import display, Markdown 
 
 #Get the absolute path of the root directory (one level up from 'src')
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
