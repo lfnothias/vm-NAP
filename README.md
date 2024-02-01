@@ -1,6 +1,6 @@
 # Virtual Metabolism Network Annotation Propagation (vm-NAP)
 
-This script downloads results of spectral annotations from [classical molecular networking](https://ccms-ucsd.github.io/GNPSDocumentation/networking/) or [feature-based molecular networking ](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking/)job from GNPS [[http://gnps.ucsd.edu](http://gnps.ucsd.edu)] and generate virtual metabolites either with SyGMa or BioTransformer. The resulting candidates can be used for [Network Annotation Propagation](https://ccms-ucsd.github.io/GNPSDocumentation/nap/) on GNPS or with [SIRIUS](https://boecker-lab.github.io/docs.sirius.github.io/install/).
+This script downloads results of spectral annotations from [classical molecular networking](https://ccms-ucsd.github.io/GNPSDocumentation/networking/) or [feature-based molecular networking ](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking/)job from GNPS [[http://gnps.ucsd.edu](http://gnps.ucsd.edu)] and generate virtual metabolites either with SyGMa and/or BioTransformer. The resulting candidates can be used for [Network Annotation Propagation](https://ccms-ucsd.github.io/GNPSDocumentation/nap/) on GNPS or with [SIRIUS](https://boecker-lab.github.io/docs.sirius.github.io/install/).
 
 
 ## Running vm-NAP
@@ -27,6 +27,10 @@ Install locally in conda with:
 
 #### vm-NAP web-app locally
 
+For using the same interface as the website, use the Streamlit web-app locally with the following steps:
+
+> Be sure the app is installed localy and you are in the repository folder.
+
 > Start the streamlit app with:
 
 ```
@@ -46,19 +50,13 @@ streamlit run vm_NAP_streamlit.py --server.port 8501 --server.address localhost
 python src/vm_NAP_processing.py --job_id=bbee697a63b1400ea585410fafc95723 --run_sygma --run_biotransformer --sirius_input_file=input/compound_identifications.tsv --debug --max_compounds_debug=3
 ```
 
-> Running this for help:
+> For help in how to use it, run:
 
 ```
 python src/vm_NAP_processing.py --help
 ```
 
 
-### Jupyter notebook on Binder
-The interactive notebook can be accessed via this badge -> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/2401_vm-NAP-demo-notebook.ipynb)
-
-Alternative - The interactive notebook can be accessed via this badge an gesis server-> [![Binder](https://mybinder.org/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/lfnothias/vm-NAP/main?urlpath=lab/tree/home/jovyan/2401_vm-NAP-demo-notebook.ipynb)
-
-Note that this is also a temporary instance with limited ressources.
 
 ### Using vm-NAP with Network Annotation Propagation
 
