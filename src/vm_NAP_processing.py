@@ -6,7 +6,9 @@ import os
 import sys
 from datetime import datetime
 import pandas as pd
-from IPhyton.display import display, Markdown 
+from IPython.display import display, Markdown
+import re
+import subprocess
 
 #Get the absolute path of the root directory (one level up from 'src')
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -75,13 +77,34 @@ logging.getLogger('').addHandler(console)
 #Redirect stdout to logger
 sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
 
+def package_version(package_name):
+    """
+    Get the version of a Python package using pip, subprocess, and regular expressions.
+    """
+    
+    result = subprocess.run(['pip', 'show', package_name], stdout=subprocess.PIPE, text=True)
+
+    # Decode the result to a string (if using Python < 3.7, use result.stdout.decode())
+    output = result.stdout
+
+    # Use a regular expression to find the version number in the output
+    version_match = re.search(r'Version: (.+)', output)
+    if version_match:
+        version = version_match.group(1)
+        return version
+    else:
+        print(f"Version not found for the package {package_name}")
+
 def main(args):
     """
     Main function to execute the vm_NAP processing workflow.
     """
     print( '')
-    print( '##STARTING vm-NAP ')
+    print( '##STARTING vm-NAP version 1.0.0')
+    print( '')
     logging.info("Script started with arguments: %s", args)
+    print( '')
+    print( '##GNPS_POSTPROCESSING Package version: '+package_version("gnps_postprocessing"))
     print( '')
 
     #Constructing the dynamic string based on provided arguments
