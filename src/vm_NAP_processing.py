@@ -81,7 +81,7 @@ def package_version(package_name):
     """
     Get the version of a Python package using pip, subprocess, and regular expressions.
     """
-    # Replace 'your-package-name' with the actual package name
+    
     result = subprocess.run(['pip', 'show', package_name], stdout=subprocess.PIPE, text=True)
 
     # Decode the result to a string (if using Python < 3.7, use result.stdout.decode())
