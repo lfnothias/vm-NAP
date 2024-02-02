@@ -6,7 +6,7 @@ import os
 import sys
 from datetime import datetime
 import pandas as pd
-from IPhyton.display import display, Markdown
+from IPython.display import display, Markdown
 import re
 import subprocess
 
