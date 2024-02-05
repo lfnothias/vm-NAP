@@ -18,7 +18,7 @@ st.set_page_config(
 # Large Title and Introductory Sentence
 st.markdown("""
     <h1 style='text-align: center; color: black;'>vm-NAP Processing Web-app</h1>
-    <p style='text-align: center;'>Welcome to the - Virtual Metabolization - Network Annotation Propagation - processing web application: </p>
+    <p style='text-align: center;'>Welcome to the - Virtual Metabolization - Network Annotation Propagation - processing web application version 1.0.0: </p>
     <p style='text-align: center;'>This tool integrates molecular networking, virtual metabolism, and annotation propagation for xenobiotic metabolites.</p>
     <div style="text-align: center;">
         <a href="https://link_to_documentation">Read the Documentation</a> |
