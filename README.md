@@ -2,12 +2,11 @@
 
 This script downloads results of spectral annotations from [classical molecular networking](https://ccms-ucsd.github.io/GNPSDocumentation/networking/) or [feature-based molecular networking ](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking/)job from GNPS [[http://gnps.ucsd.edu](http://gnps.ucsd.edu)] and generate virtual metabolites either with SyGMa and/or BioTransformer. The resulting candidates can be used for [Network Annotation Propagation](https://ccms-ucsd.github.io/GNPSDocumentation/nap/) on GNPS or with [SIRIUS](https://boecker-lab.github.io/docs.sirius.github.io/install/).
 
-See the web-app at [https://vm-nap-415d4471c20c.herokuapp.com/](https://vm-nap-415d4471c20c.herokuapp.com/).
 ## Running vm-NAP
 
 ### vm-NAP web-app (cloud-based)
 
-Click on the following link to launch the vm-NAP web-app. 
+Click on the following link to launch the vm-NAP web-app [https://vm-nap-415d4471c20c.herokuapp.com/](https://vm-nap-415d4471c20c.herokuapp.com/).
 Note that this is a temporary instance with limited ressources. For better performance or larger projects, please install and use it locally.
 
 
